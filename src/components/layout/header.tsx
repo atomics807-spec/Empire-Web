@@ -13,7 +13,10 @@ import {
   Utensils,
   Home,
   Phone,
-  HelpCircle
+  HelpCircle,
+  Images,
+  Info,
+  Briefcase
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -40,6 +43,9 @@ export function Header({ locale, isAuthenticated = false }: HeaderProps) {
     { href: `/${locale}`, label: t('nav.home', locale), icon: Home },
     { href: `/${locale}/restaurant`, label: t('nav.restaurant', locale), icon: Utensils },
     { href: `/${locale}/events`, label: t('nav.events', locale), icon: Calendar },
+    { href: `/${locale}/gallery`, label: t('nav.gallery', locale), icon: Images },
+    { href: `/${locale}/about`, label: t('nav.about', locale), icon: Info },
+    { href: `/${locale}/careers`, label: t('nav.careers', locale), icon: Briefcase },
     { href: `/${locale}/contact`, label: t('nav.contact', locale), icon: Phone },
     { href: `/${locale}/faq`, label: t('nav.faq', locale), icon: HelpCircle },
   ]

@@ -66,6 +66,15 @@ export function Footer({ locale }: FooterProps) {
               <Link href={`/${locale}/events`} className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 {t('nav.events', locale)}
               </Link>
+              <Link href={`/${locale}/gallery`} className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                {t('nav.gallery', locale)}
+              </Link>
+              <Link href={`/${locale}/about`} className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                {t('nav.about', locale)}
+              </Link>
+              <Link href={`/${locale}/careers`} className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                {t('nav.careers', locale)}
+              </Link>
               <Link href={`/${locale}/contact`} className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 {t('nav.contact', locale)}
               </Link>
