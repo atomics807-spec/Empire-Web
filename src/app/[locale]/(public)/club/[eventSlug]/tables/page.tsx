@@ -130,11 +130,127 @@ export default function TablesPage({ params }: TablesPageProps) {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Table Packages */}
+          {/* Interactive Floor Plan */}
           <div className="lg:col-span-2">
             <Card>
               <CardHeader>
-                <CardTitle>{locale === 'en' ? 'Table Packages' : 'Packages Table'}</CardTitle>
+                <CardTitle className="flex items-center justify-between">
+                  <span>{locale === 'en' ? 'Interactive Floor Plan' : 'Plan de Salle Interactif'}</span>
+                  <Badge variant="outline" className="text-xs">{locale === 'en' ? 'Click a table to select' : 'Cliquez sur une table'}</Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="relative bg-surface-elevated rounded-xl p-6 overflow-hidden">
+                  {/* Club Layout SVG */}
+                  <svg viewBox="0 0 600 400" className="w-full h-auto">
+                    {/* Dance Floor */}
+                    <rect x="175" y="20" width="250" height="120" rx="10" fill="#1f2833" stroke="#ff0055" strokeWidth="2" />
+                    <text x="300" y="75" textAnchor="middle" fill="#ff0055" fontSize="14" fontWeight="bold">
+                      {locale === 'en' ? 'DANCE FLOOR' : 'PISTE DE DANSE'}
+                    </text>
+                    {/* DJ Booth */}
+                    <rect x="250" y="140" width="100" height="40" rx="5" fill="#1f2833" stroke="#00f0ff" strokeWidth="1" />
+                    <text x="300" y="165" textAnchor="middle" fill="#00f0ff" fontSize="10">DJ BOOTH</text>
+                    
+                    {/* VIP Section */}
+                    <rect x="20" y="20" width="130" height="160" rx="8" fill="#c5a059" fillOpacity="0.1" stroke="#c5a059" strokeWidth="1" />
+                    <text x="85" y="15" textAnchor="middle" fill="#c5a059" fontSize="10" fontWeight="bold">VIP SECTION</text>
+                    
+                    {/* VVIP Section */}
+                    <rect x="450" y="20" width="130" height="160" rx="8" fill="#c5a059" fillOpacity="0.2" stroke="#c5a059" strokeWidth="2" />
+                    <text x="515" y="15" textAnchor="middle" fill="#c5a059" fontSize="10" fontWeight="bold">VVIP SECTION</text>
+                    
+                    {/* Bar */}
+                    <rect x="20" y="300" width="560" height="60" rx="5" fill="#1f2833" stroke="#00f0ff" strokeWidth="1" />
+                    <text x="300" y="335" textAnchor="middle" fill="#00f0ff" fontSize="12" fontWeight="bold">BAR</text>
+                    
+                    {/* Tables */}
+                    {tables.map((table, idx) => {
+                      const positions = [
+                        { x: 50, y: 50 },   // V1 - VIP
+                        { x: 100, y: 120 }, // V2 - VIP
+                        { x: 475, y: 50 },  // VV1 - VVIP
+                        { x: 525, y: 120 }, // Additional VVIP
+                        { x: 200, y: 200 }, // C1 - Regular
+                        { x: 280, y: 200 }, // C2 - Regular
+                        { x: 360, y: 200 }, // C3 - Regular
+                        { x: 200, y: 260 }, // Additional Regular
+                        { x: 280, y: 260 }, // Additional Regular
+                        { x: 360, y: 260 }, // Additional Regular
+                      ]
+                      const pos = positions[idx] || { x: 200, y: 220 }
+                      
+                      const isSelected = selectedTable?.id === table.id
+                      const isAvailable = table.status === 'available'
+                      
+                      let fillColor = '#1f2833'
+                      let strokeColor = '#4a5568'
+                      if (table.type === 'vip') {
+                        fillColor = isSelected ? '#ff0055' : '#c5a059'
+                        strokeColor = '#c5a059'
+                      } else if (table.type === 'vvip') {
+                        fillColor = isSelected ? '#ff0055' : '#c5a059'
+                        strokeColor = '#c5a059'
+                      }
+                      if (!isAvailable) fillColor = '#374151'
+                      
+                      return (
+                        <g key={table.id} onClick={() => handleTableSelect(table)} className="cursor-pointer">
+                          <rect
+                            x={pos.x}
+                            y={pos.y}
+                            width="60"
+                            height="50"
+                            rx="8"
+                            fill={fillColor}
+                            stroke={isSelected ? '#00f0ff' : strokeColor}
+                            strokeWidth={isSelected ? 3 : 1}
+                            opacity={isAvailable ? 1 : 0.5}
+                          />
+                          <text x={pos.x + 30} y={pos.y + 25} textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">
+                            {table.name.replace('Club ', '').replace('Table ', 'T')}
+                          </text>
+                          <text x={pos.x + 30} y={pos.y + 38} textAnchor="middle" fill="#9ca3af" fontSize="8">
+                            {table.capacity}👤
+                          </text>
+                          {!isAvailable && (
+                            <circle cx={pos.x + 50} cy={pos.y + 10} r="6" fill={
+                              table.status === 'reserved' ? '#ff0055' : 
+                              table.status === 'locked' ? '#f59e0b' : '#6b7280'
+                            } />
+                          )}
+                        </g>
+                      )
+                    })}
+                  </svg>
+                  
+                  {/* Legend */}
+                  <div className="flex flex-wrap gap-4 mt-4 pt-4 border-t border-border">
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded bg-[#1f2833] border border-[#4a5568]" />
+                      <span className="text-xs text-muted-foreground">{locale === 'en' ? 'Regular' : 'Standard'}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded bg-[#c5a059]" />
+                      <span className="text-xs text-muted-foreground">VIP/VVIP</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded bg-[#374151]" />
+                      <span className="text-xs text-muted-foreground">{locale === 'en' ? 'Reserved' : 'Réservé'}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded bg-[#ff0055] border-2 border-[#00f0ff]" />
+                      <span className="text-xs text-muted-foreground">{locale === 'en' ? 'Selected' : 'Sélectionné'}</span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Table Packages List */}
+            <Card className="mt-6">
+              <CardHeader>
+                <CardTitle>{locale === 'en' ? 'Available Tables' : 'Tables Disponibles'}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -156,9 +272,9 @@ export default function TablesPage({ params }: TablesPageProps) {
                           {tableTypeLabels[table.type as keyof typeof tableTypeLabels][locale]}
                         </Badge>
                       )}
-                      <div className="mb-3">
+                      <div className="mb-2">
                         <h4 className="font-bold text-foreground">{table.name}</h4>
-                        <p className="text-2xl font-bold text-club-accent">
+                        <p className="text-xl font-bold text-club-accent">
                           {table.deposit.toLocaleString()} XAF
                         </p>
                         <p className="text-xs text-muted-foreground">
@@ -166,7 +282,7 @@ export default function TablesPage({ params }: TablesPageProps) {
                         </p>
                       </div>
                       
-                      <div className="space-y-1 mb-3">
+                      <div className="space-y-1 mb-2">
                         <p className="text-sm text-muted-foreground flex items-center gap-2">
                           <Users className="h-4 w-4" />
                           {table.capacity} {locale === 'en' ? 'guests' : 'invités'}
