@@ -1,0 +1,377 @@
+export type Locale = 'en' | 'fr'
+
+export const locales: Locale[] = ['en', 'fr']
+export const defaultLocale: Locale = 'en'
+
+export const localeNames: Record<Locale, string> = {
+  en: 'English',
+  fr: 'Français',
+}
+
+/**
+ * Translations for common UI elements
+ */
+export const translations: Record<Locale, Record<string, string>> = {
+  en: {
+    // Navigation
+    'nav.home': 'Home',
+    'nav.restaurant': 'Restaurant',
+    'nav.menu': 'Menu',
+    'nav.events': 'Events',
+    'nav.contact': 'Contact',
+    'nav.faq': 'FAQ',
+    'nav.dashboard': 'Dashboard',
+    'nav.admin': 'Admin',
+    'nav.signIn': 'Sign In',
+    'nav.signUp': 'Sign Up',
+    'nav.signOut': 'Sign Out',
+    'nav.cart': 'Cart',
+
+    // Restaurant
+    'restaurant.open': 'Open',
+    'restaurant.closed': 'Closed',
+    'restaurant.orderNow': 'Order Now',
+    'restaurant.viewMenu': 'View Menu',
+    'restaurant.closesIn': 'Closes in',
+    'restaurant.opensAt': 'Opens at',
+    'restaurant.orderUnavailable': 'Ordering is currently unavailable',
+    'restaurant.lateNight': 'Late Night Specials',
+    'restaurant.dineIn': 'Dine In',
+    'restaurant.takeaway': 'Takeaway',
+    'restaurant.selectTable': 'Select Table',
+    'restaurant.addToCart': 'Add to Cart',
+    'restaurant.removeFromCart': 'Remove',
+    'restaurant.checkout': 'Checkout',
+    'restaurant.yourOrder': 'Your Order',
+    'restaurant.emptyCart': 'Your cart is empty',
+    'restaurant.subtotal': 'Subtotal',
+    'restaurant.fees': 'Fees',
+    'restaurant.total': 'Total',
+    'restaurant.placeOrder': 'Place Order',
+    'restaurant.preparing': 'Preparing',
+    'restaurant.ready': 'Ready',
+    'restaurant.completed': 'Completed',
+
+    // Club
+    'club.upcomingEvents': 'Upcoming Events',
+    'club.tickets': 'Tickets',
+    'club.guestList': 'Guest List',
+    'club.reserveTable': 'Reserve Table',
+    'club.buyTickets': 'Buy Tickets',
+    'club.joinGuestList': 'Join Guest List',
+    'club.vip': 'VIP',
+    'club.vvip': 'VVIP',
+    'club.table': 'Table',
+    'club.deposit': 'Deposit',
+    'club.minimumSpend': 'Minimum Spend',
+    'club.available': 'Available',
+    'club.locked': 'Locked',
+    'club.reserved': 'Reserved',
+    'club.occupied': 'Occupied',
+    'club.tableReserved': 'Table Reserved',
+    'club.lockExpires': 'Lock expires in',
+    'club.confirmReservation': 'Confirm Reservation',
+
+    // Events
+    'event.doorsOpen': 'Doors Open',
+    'event.startTime': 'Starts',
+    'event.endTime': 'Ends',
+    'event.agePolicy': 'Age Policy',
+    'event.dressCode': 'Dress Code',
+    'event.tickets': 'Tickets',
+    'event.soldOut': 'Sold Out',
+    'event.available': 'Available',
+    'event.selectTickets': 'Select Tickets',
+    'event.quantity': 'Quantity',
+    'event.total': 'Total',
+
+    // Auth
+    'auth.signIn': 'Sign In',
+    'auth.signUp': 'Sign Up',
+    'auth.signOut': 'Sign Out',
+    'auth.email': 'Email',
+    'auth.password': 'Password',
+    'auth.confirmPassword': 'Confirm Password',
+    'auth.forgotPassword': 'Forgot Password?',
+    'auth.resetPassword': 'Reset Password',
+    'auth.sendResetLink': 'Send Reset Link',
+    'auth.createAccount': 'Create Account',
+    'auth.alreadyHaveAccount': 'Already have an account?',
+    'auth.dontHaveAccount': "Don't have an account?",
+    'auth.orContinueWith': 'Or continue with',
+    'auth.fullName': 'Full Name',
+    'auth.phoneNumber': 'Phone Number',
+    'auth.agreeToTerms': 'I agree to the Terms of Service and Privacy Policy',
+    'auth.verifyEmail': 'Verify your email',
+    'auth.checkEmail': 'Check your email for a verification link',
+
+    // Dashboard
+    'dashboard.myOrders': 'My Orders',
+    'dashboard.myReservations': 'My Reservations',
+    'dashboard.myPasses': 'My Passes',
+    'dashboard.profile': 'Profile',
+    'dashboard.settings': 'Settings',
+
+    // Passes
+    'pass.valid': 'Valid',
+    'pass.checkedIn': 'Checked In',
+    'pass.expired': 'Expired',
+    'pass.revoked': 'Revoked',
+    'pass.download': 'Download Pass',
+    'pass.scan': 'Scan Pass',
+
+    // Admin
+    'admin.dashboard': 'Dashboard',
+    'admin.orders': 'Orders',
+    'admin.menu': 'Menu',
+    'admin.categories': 'Categories',
+    'admin.tables': 'Tables',
+    'admin.events': 'Events',
+    'admin.tickets': 'Tickets',
+    'admin.reservations': 'Reservations',
+    'admin.guestList': 'Guest List',
+    'admin.checkIn': 'Check In',
+    'admin.customers': 'Customers',
+    'admin.staff': 'Staff',
+    'admin.reports': 'Reports',
+    'admin.settings': 'Settings',
+    'admin.audit': 'Audit Log',
+    'admin.notifications': 'Notifications',
+
+    // Kitchen
+    'kitchen.paid': 'Paid',
+    'kitchen.preparing': 'Preparing',
+    'kitchen.ready': 'Ready',
+    'kitchen.table': 'Table',
+    'kitchen.takeaway': 'Takeaway',
+    'kitchen.elapsed': 'Elapsed',
+
+    // Payment
+    'payment.initiate': 'Pay Now',
+    'payment.method': 'Payment Method',
+    'payment.mobileMoney': 'Mobile Money',
+    'payment.amount': 'Amount',
+    'payment.phone': 'Phone Number',
+    'payment.processing': 'Processing...',
+    'payment.success': 'Payment Successful',
+    'payment.failed': 'Payment Failed',
+    'payment.pending': 'Payment Pending',
+    'payment.cancel': 'Cancel',
+    'payment.retry': 'Retry',
+
+    // Common
+    'common.save': 'Save',
+    'common.cancel': 'Cancel',
+    'common.delete': 'Delete',
+    'common.edit': 'Edit',
+    'common.view': 'View',
+    'common.back': 'Back',
+    'common.next': 'Next',
+    'common.previous': 'Previous',
+    'common.search': 'Search',
+    'common.filter': 'Filter',
+    'common.loading': 'Loading...',
+    'common.error': 'Error',
+    'common.success': 'Success',
+    'common.warning': 'Warning',
+    'common.info': 'Info',
+    'common.confirm': 'Confirm',
+    'common.yes': 'Yes',
+    'common.no': 'No',
+    'common.close': 'Close',
+    'common.submit': 'Submit',
+    'common.required': 'Required',
+    'common.optional': 'Optional',
+    'common.currency': 'XAF',
+  },
+  fr: {
+    // Navigation
+    'nav.home': 'Accueil',
+    'nav.restaurant': 'Restaurant',
+    'nav.menu': 'Menu',
+    'nav.events': 'Événements',
+    'nav.contact': 'Contact',
+    'nav.faq': 'FAQ',
+    'nav.dashboard': 'Tableau de bord',
+    'nav.admin': 'Administration',
+    'nav.signIn': 'Connexion',
+    'nav.signUp': "S'inscrire",
+    'nav.signOut': 'Déconnexion',
+    'nav.cart': 'Panier',
+
+    // Restaurant
+    'restaurant.open': 'Ouvert',
+    'restaurant.closed': 'Fermé',
+    'restaurant.orderNow': 'Commander',
+    'restaurant.viewMenu': 'Voir le Menu',
+    'restaurant.closesIn': 'Ferme dans',
+    'restaurant.opensAt': 'Ouvre à',
+    'restaurant.orderUnavailable': 'Les commandes ne sont pas disponibles',
+    'restaurant.lateNight': 'Spéciaux de Nuit',
+    'restaurant.dineIn': 'Sur Place',
+    'restaurant.takeaway': 'À Emporter',
+    'restaurant.selectTable': 'Sélectionner une Table',
+    'restaurant.addToCart': 'Ajouter au Panier',
+    'restaurant.removeFromCart': 'Retirer',
+    'restaurant.checkout': 'Commander',
+    'restaurant.yourOrder': 'Votre Commande',
+    'restaurant.emptyCart': 'Votre panier est vide',
+    'restaurant.subtotal': 'Sous-total',
+    'restaurant.fees': 'Frais',
+    'restaurant.total': 'Total',
+    'restaurant.placeOrder': 'Passer la Commande',
+    'restaurant.preparing': 'En préparation',
+    'restaurant.ready': 'Prêt',
+    'restaurant.completed': 'Terminé',
+
+    // Club
+    'club.upcomingEvents': 'Événements à Venir',
+    'club.tickets': 'Billets',
+    'club.guestList': 'Liste des Invités',
+    'club.reserveTable': 'Réserver une Table',
+    'club.buyTickets': 'Acheter des Billets',
+    'club.joinGuestList': "Rejoindre la Liste",
+    'club.vip': 'VIP',
+    'club.vvip': 'VVIP',
+    'club.table': 'Table',
+    'club.deposit': 'Acompte',
+    'club.minimumSpend': 'Dépense Minimum',
+    'club.available': 'Disponible',
+    'club.locked': 'Verrouillé',
+    'club.reserved': 'Réservé',
+    'club.occupied': 'Occupé',
+    'club.tableReserved': 'Table Réservée',
+    'club.lockExpires': "L'offre expire dans",
+    'club.confirmReservation': 'Confirmer la Réservation',
+
+    // Events
+    'event.doorsOpen': 'Portes Ouvertes',
+    'event.startTime': 'Début',
+    'event.endTime': 'Fin',
+    'event.agePolicy': 'Politique d\'Âge',
+    'event.dressCode': 'Code Vestimentaire',
+    'event.tickets': 'Billets',
+    'event.soldOut': 'Épuisé',
+    'event.available': 'Disponible',
+    'event.selectTickets': 'Sélectionner des Billets',
+    'event.quantity': 'Quantité',
+    'event.total': 'Total',
+
+    // Auth
+    'auth.signIn': 'Connexion',
+    'auth.signUp': "S'inscrire",
+    'auth.signOut': 'Déconnexion',
+    'auth.email': 'Email',
+    'auth.password': 'Mot de passe',
+    'auth.confirmPassword': 'Confirmer le mot de passe',
+    'auth.forgotPassword': 'Mot de passe oublié ?',
+    'auth.resetPassword': 'Réinitialiser le mot de passe',
+    'auth.sendResetLink': 'Envoyer le lien',
+    'auth.createAccount': 'Créer un compte',
+    'auth.alreadyHaveAccount': 'Déjà un compte ?',
+    'auth.dontHaveAccount': 'Pas de compte ?',
+    'auth.orContinueWith': 'Ou continuer avec',
+    'auth.fullName': 'Nom complet',
+    'auth.phoneNumber': 'Numéro de téléphone',
+    'auth.agreeToTerms': "J'accepte les Conditions d'Utilisation et la Politique de Confidentialité",
+    'auth.verifyEmail': 'Vérifiez votre email',
+    'auth.checkEmail': 'Consultez votre email pour le lien de vérification',
+
+    // Dashboard
+    'dashboard.myOrders': 'Mes Commandes',
+    'dashboard.myReservations': 'Mes Réservations',
+    'dashboard.myPasses': 'Mes Pass',
+    'dashboard.profile': 'Profil',
+    'dashboard.settings': 'Paramètres',
+
+    // Passes
+    'pass.valid': 'Valide',
+    'pass.checkedIn': 'Enregistré',
+    'pass.expired': 'Expiré',
+    'pass.revoked': 'Révoqué',
+    'pass.download': 'Télécharger le Pass',
+    'pass.scan': 'Scanner le Pass',
+
+    // Admin
+    'admin.dashboard': 'Tableau de bord',
+    'admin.orders': 'Commandes',
+    'admin.menu': 'Menu',
+    'admin.categories': 'Catégories',
+    'admin.tables': 'Tables',
+    'admin.events': 'Événements',
+    'admin.tickets': 'Billets',
+    'admin.reservations': 'Réservations',
+    'admin.guestList': 'Liste des Invités',
+    'admin.checkIn': 'Enregistrement',
+    'admin.customers': 'Clients',
+    'admin.staff': 'Personnel',
+    'admin.reports': 'Rapports',
+    'admin.settings': 'Paramètres',
+    'admin.audit': "Journal d'Audit",
+    'admin.notifications': 'Notifications',
+
+    // Kitchen
+    'kitchen.paid': 'Payé',
+    'kitchen.preparing': 'En préparation',
+    'kitchen.ready': 'Prêt',
+    'kitchen.table': 'Table',
+    'kitchen.takeaway': 'À emporter',
+    'kitchen.elapsed': 'Écoulé',
+
+    // Payment
+    'payment.initiate': 'Payer Maintenant',
+    'payment.method': 'Mode de Paiement',
+    'payment.mobileMoney': 'Mobile Money',
+    'payment.amount': 'Montant',
+    'payment.phone': 'Numéro de Téléphone',
+    'payment.processing': 'Traitement...',
+    'payment.success': 'Paiement Réussi',
+    'payment.failed': 'Paiement Échoué',
+    'payment.pending': 'Paiement en Attente',
+    'payment.cancel': 'Annuler',
+    'payment.retry': 'Réessayer',
+
+    // Common
+    'common.save': 'Enregistrer',
+    'common.cancel': 'Annuler',
+    'common.delete': 'Supprimer',
+    'common.edit': 'Modifier',
+    'common.view': 'Voir',
+    'common.back': 'Retour',
+    'common.next': 'Suivant',
+    'common.previous': 'Précédent',
+    'common.search': 'Rechercher',
+    'common.filter': 'Filtrer',
+    'common.loading': 'Chargement...',
+    'common.error': 'Erreur',
+    'common.success': 'Succès',
+    'common.warning': 'Attention',
+    'common.info': 'Info',
+    'common.confirm': 'Confirmer',
+    'common.yes': 'Oui',
+    'common.no': 'Non',
+    'common.close': 'Fermer',
+    'common.submit': 'Soumettre',
+    'common.required': 'Requis',
+    'common.optional': 'Optionnel',
+    'common.currency': 'XAF',
+  },
+}
+
+/**
+ * Get a translation for a key
+ */
+export function t(key: string, locale: Locale = 'en'): string {
+  return translations[locale][key] || translations[defaultLocale][key] || key
+}
+
+/**
+ * Get bilingual content
+ */
+export function getBilingualContent<T extends Record<string, string>>(
+  content: T | null,
+  locale: Locale
+): string {
+  if (!content) return ''
+  return content[locale] || content.en || ''
+}
