@@ -19,6 +19,7 @@ import { formatPrice } from '@/lib/utils'
 const events = [
   {
     id: '1',
+    slug: 'saturday-night-fever',
     title: { en: 'Saturday Night Fever', fr: 'Fièvre du Samedi Soir' },
     description: { en: 'The hottest night in Limbe! DJ Kely spinning the best afro beats and international hits.', fr: 'La nuit la plus chaude à Limbe ! DJ Kely mixant les meilleurs afro beats et tubes internationaux.' },
     startTime: '2026-08-15T21:00:00',
@@ -35,6 +36,7 @@ const events = [
   },
   {
     id: '2',
+    slug: 'afro-beats-night',
     title: { en: 'Afro Beats Night', fr: 'Soirée Afro Beats' },
     description: { en: 'Celebrate African music with live performances and the best DJs from Cameroon.', fr: 'Célébrez la musique africaine avec des performances live et les meilleurs DJs du Cameroun.' },
     startTime: '2026-08-22T22:00:00',
@@ -50,6 +52,7 @@ const events = [
   },
   {
     id: '3',
+    slug: 'ladies-night',
     title: { en: 'Ladies Night', fr: 'Soirée Ladies' },
     description: { en: 'Ladies free entry before 11 PM! Premium cocktails and special performances.', fr: 'Ladies entrée gratuite avant 23h ! Cocktails premium et performances spéciales.' },
     startTime: '2026-08-29T21:00:00',
@@ -178,7 +181,7 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
                       </div>
 
                       <div className="flex gap-2">
-                        <Link href={`/${locale}/events/${event.id}`} className="flex-1">
+                        <Link href={`/${locale}/events/${event.slug}`} className="flex-1">
                           <Button className="w-full btn-club">
                             {t('club.buyTickets', locale as Locale)}
                           </Button>
@@ -237,7 +240,7 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
                         {event.tickets.reduce((sum, t) => sum + t.available, 0)}
                       </span>
                     </div>
-                    <Link href={`/${locale}/events/${event.id}`}>
+                    <Link href={`/${locale}/events/${event.slug}`}>
                       <Button variant="outline" className="w-full">
                         {locale === 'en' ? 'View Details' : 'Voir Détails'}
                         <ChevronRight className="h-4 w-4 ml-2" />
@@ -262,7 +265,7 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
               ? 'Reserve a VIP table for your group and enjoy premium service all night.'
               : 'Réservez une table VIP pour votre groupe et profitez d\'un service premium toute la nuit.'}
           </p>
-          <Link href={`/${locale}/events/${events[0].id}/tables`}>
+          <Link href={`/${locale}/events/${events[0].slug}/tables`}>
             <Button className="btn-vip">
               {t('club.reserveTable', locale as Locale)}
             </Button>
