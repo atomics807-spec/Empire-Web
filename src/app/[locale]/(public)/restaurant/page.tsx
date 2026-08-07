@@ -15,26 +15,15 @@ export default function RestaurantPage({ params }: RestaurantPageProps) {
 
   return (
     <PublicLayout locale={locale}>
-      {/* Hero Section - Light Theme with Background Image */}
-      <section className="relative min-h-[600px] flex items-center">
-        {/* Background Image */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920&q=80')`,
-          }}
-        >
-          {/* Dark Overlay for readability */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/65 to-black/50" />
-        </div>
-        
+      {/* Hero Section - Subtle Light Theme */}
+      <section className="relative min-h-[600px] flex items-center bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-100">
         {/* Back Button */}
         <div className="absolute top-6 left-4 z-20">
           <Link href={`/${locale}`}>
             <Button 
               variant="ghost" 
               size="sm" 
-              className="bg-white/90 backdrop-blur-sm border border-white/30 text-gray-800 hover:bg-white shadow-lg"
+              className="bg-white/80 backdrop-blur-sm border border-gray-200 text-gray-700 hover:bg-white shadow-sm"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               {locale === 'en' ? 'Back' : 'Retour'}
@@ -43,10 +32,10 @@ export default function RestaurantPage({ params }: RestaurantPageProps) {
         </div>
         
         {/* Content */}
-        <div className="relative container mx-auto px-4 py-20">
+        <div className="container mx-auto px-4 py-20">
           <div className="max-w-3xl">
             {/* Status Badge */}
-            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-green-500 text-white font-semibold mb-8 shadow-lg shadow-green-500/40">
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-green-500 text-white font-semibold mb-8 shadow-lg">
               <span className="relative flex h-3 w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
@@ -55,33 +44,33 @@ export default function RestaurantPage({ params }: RestaurantPageProps) {
             </div>
             
             {/* Title */}
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-lg">
+            <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
               {locale === 'en' ? 'Empire' : 'Empire'}{' '}
-              <span className="text-orange-400">Restaurant</span>
+              <span className="text-orange-600">Restaurant</span>
             </h1>
             
             {/* Description */}
-            <p className="text-xl md:text-2xl text-white/90 mb-4 max-w-xl drop-shadow">
+            <p className="text-xl md:text-2xl text-gray-700 mb-4 max-w-xl">
               {locale === 'en' 
                 ? 'Experience the finest authentic Cameroonian cuisine in the heart of Limbe'
                 : 'Découvrez la meilleure cuisine camerounaise authentique au cœur de Limbe'}
             </p>
             
             {/* Location */}
-            <div className="flex items-center gap-2 text-white/80 mb-8 drop-shadow">
-              <MapPin className="h-5 w-5 text-orange-400" />
+            <div className="flex items-center gap-2 text-gray-600 mb-8">
+              <MapPin className="h-5 w-5 text-orange-600" />
               <span>Opposite Limbe Community Field, Cameroon</span>
             </div>
             
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href={`/${locale}/restaurant/menu`}>
-                <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white text-lg px-10 py-7 shadow-xl shadow-orange-500/40 border-0">
+                <Button size="lg" className="bg-orange-600 hover:bg-orange-700 text-white text-lg px-10 py-7 shadow-xl shadow-orange-600/30 border-0">
                   <Utensils className="h-6 w-6 mr-3" />
                   {locale === 'en' ? 'View Menu' : 'Voir le Menu'}
                 </Button>
               </Link>
-              <Button variant="outline" size="lg" className="border-2 border-white/50 text-white hover:bg-white/20 hover:text-white text-lg px-10 py-7 backdrop-blur-sm">
+              <Button variant="outline" size="lg" className="border-2 border-orange-300 text-orange-700 hover:bg-orange-50 text-lg px-10 py-7 bg-white">
                 <Clock className="h-6 w-6 mr-3" />
                 08:00 - 17:30
               </Button>
@@ -91,10 +80,10 @@ export default function RestaurantPage({ params }: RestaurantPageProps) {
         
         {/* Scroll Indicator */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-          <div className="flex flex-col items-center text-white/70">
-            <span className="text-sm mb-2 drop-shadow">{locale === 'en' ? 'Scroll' : 'Défiler'}</span>
-            <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center backdrop-blur-sm">
-              <div className="w-1.5 h-3 bg-white/70 rounded-full mt-2 animate-bounce" />
+          <div className="flex flex-col items-center text-gray-500">
+            <span className="text-sm mb-2">{locale === 'en' ? 'Scroll' : 'Défiler'}</span>
+            <div className="w-6 h-10 border-2 border-gray-300 rounded-full flex justify-center">
+              <div className="w-1.5 h-3 bg-gray-400 rounded-full mt-2 animate-bounce" />
             </div>
           </div>
         </div>
