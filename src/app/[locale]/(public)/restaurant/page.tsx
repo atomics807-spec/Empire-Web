@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Utensils, Clock, MapPin, Leaf } from 'lucide-react'
+import { Utensils, Clock, MapPin, Leaf, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { PublicLayout } from '@/components/layout/public-layout'
 import { type Locale } from '@/lib/i18n'
@@ -27,6 +27,20 @@ export default function RestaurantPage({ params }: RestaurantPageProps) {
         >
           {/* Dark Overlay */}
           <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/50" />
+        </div>
+        
+        {/* Back Button */}
+        <div className="absolute top-6 left-4 z-20">
+          <Link href={`/${locale}`}>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="bg-black/30 backdrop-blur-sm border border-white/20 text-white hover:bg-black/50 hover:text-white"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              {locale === 'en' ? 'Back' : 'Retour'}
+            </Button>
+          </Link>
         </div>
         
         {/* Content */}

@@ -92,15 +92,31 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
 
   return (
     <PublicLayout locale={locale as Locale}>
-      {/* Header */}
-      <section className="bg-gradient-primary noise-overlay">
-        <div className="container mx-auto px-4 py-16">
-          <div className="text-center text-white">
-            <Badge variant="outline" className="border-white/50 text-white mb-4">
+      {/* Header - Night Club Hero */}
+      <section className="relative min-h-[400px] flex items-center overflow-hidden">
+        {/* Night Club Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url('https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1920&q=80')`,
+          }}
+        >
+          {/* Dramatic gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/80" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
+          {/* Neon effects */}
+          <div className="absolute top-0 right-1/4 w-80 h-80 bg-primary/20 rounded-full blur-[120px]" />
+          <div className="absolute bottom-0 left-1/4 w-64 h-64 bg-secondary/20 rounded-full blur-[100px]" />
+        </div>
+
+        {/* Content */}
+        <div className="relative z-10 container mx-auto px-4 py-16">
+          <div className="text-center text-white max-w-3xl mx-auto">
+            <Badge variant="club" className="mb-4 bg-primary/20 border-primary/50 text-white">
               <Calendar className="h-4 w-4 mr-2" />
               {t('club.upcomingEvents', locale as Locale)}
             </Badge>
-            <h1 className="text-5xl font-bold mb-4 text-glow-primary">
+            <h1 className="text-5xl font-bold mb-4 text-white drop-shadow-[0_0_30px_rgba(255,0,85,0.3)]">
               {locale === 'en' ? 'Upcoming Events' : 'Événements à Venir'}
             </h1>
             <p className="text-xl text-white/80 max-w-2xl mx-auto">
@@ -109,6 +125,11 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
                 : 'Dansez, célébrez et créez des souvenirs à Empire Night Club. Réservez votre place maintenant !'}
             </p>
           </div>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 animate-bounce">
+          <ChevronRight className="h-5 w-5 text-white/50 rotate-90" />
         </div>
       </section>
 

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useParams } from 'next/navigation'
 import { 
   Clock, 
   ShoppingCart, 
@@ -11,7 +12,8 @@ import {
   Star,
   AlertCircle,
   Plus,
-  Check
+  Check,
+  ArrowLeft
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -94,6 +96,7 @@ const categories = [
         isAvailable: true,
         isFeatured: false,
         prepTime: 2,
+        image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400',
       },
       {
         id: '7',
@@ -103,6 +106,47 @@ const categories = [
         isAvailable: true,
         isFeatured: true,
         prepTime: 3,
+        image: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400',
+      },
+      {
+        id: '8',
+        name: { en: 'Coca Cola', fr: 'Coca Cola' },
+        description: { en: 'Ice cold refreshing cola', fr: 'Cola frais rafraîchissant' },
+        price: 500,
+        isAvailable: true,
+        isFeatured: false,
+        prepTime: 1,
+        image: 'https://images.unsplash.com/photo-1554866585-cd94860890b7?w=400',
+      },
+      {
+        id: '9',
+        name: { en: 'Orange Juice', fr: 'Jus d\'Orange' },
+        description: { en: 'Freshly squeezed orange juice', fr: 'Jus d\'orange frais' },
+        price: 1000,
+        isAvailable: true,
+        isFeatured: false,
+        prepTime: 2,
+        image: 'https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400',
+      },
+      {
+        id: '10',
+        name: { en: 'Royal Mint Tea', fr: 'Thé Menthe Royale' },
+        description: { en: 'Traditional Moroccan mint tea', fr: 'Thé à la menthe marocain traditionnel' },
+        price: 800,
+        isAvailable: true,
+        isFeatured: true,
+        prepTime: 3,
+        image: 'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=400',
+      },
+      {
+        id: '11',
+        name: { en: 'Bottled Water', fr: 'Eau en Bouteille' },
+        description: { en: 'Purified mineral water', fr: 'Eau minérale purifiée' },
+        price: 300,
+        isAvailable: true,
+        isFeatured: false,
+        prepTime: 1,
+        image: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=400',
       },
     ],
   },
@@ -124,6 +168,7 @@ interface MenuItemProps {
     isAvailable: boolean
     isFeatured: boolean
     prepTime: number
+    image?: string
   }
   locale: 'en' | 'fr'
   orderingAvailable: boolean
@@ -150,20 +195,44 @@ function MenuItem({ item, locale, orderingAvailable }: MenuItemProps) {
 
   return (
     <Card className="overflow-hidden card-hover border-restaurant-accent/20 hover:border-restaurant-accent/50 transition-all">
-      <CardContent className="p-4">
+      {item.image ? (
+        <div className="relative h-40 overflow-hidden">
+          <img 
+            src={item.image} 
+            alt={getBilingualContent(item.name, locale)}
+            className="w-full h-full object-cover"
+          />
+          {item.isFeatured && (
+            <Badge variant="vip" className="absolute top-2 right-2">
+              <Star className="h-3 w-3 mr-1" />
+              {locale === 'en' ? 'Featured' : 'Populaire'}
+            </Badge>
+          )}
+        </div>
+      ) : null}
+      <CardContent className={item.image ? "p-4" : "p-4"}>
         <div className="flex justify-between items-start gap-4">
           <div className="flex-1">
-            <div className="flex items-center gap-2 mb-1">
-              <h3 className="font-semibold text-foreground">
-                {getBilingualContent(item.name, locale)}
-              </h3>
-              {item.isFeatured && (
-                <Badge variant="vip" size="sm">
-                  <Star className="h-3 w-3 mr-1" />
-                  {locale === 'en' ? 'Featured' : 'Populaire'}
-                </Badge>
-              )}
-            </div>
+            {!item.image && (
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="font-semibold text-foreground">
+                  {getBilingualContent(item.name, locale)}
+                </h3>
+                {item.isFeatured && (
+                  <Badge variant="vip" size="sm">
+                    <Star className="h-3 w-3 mr-1" />
+                    {locale === 'en' ? 'Featured' : 'Populaire'}
+                  </Badge>
+                )}
+              </div>
+            )}
+            {item.image && (
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="font-semibold text-foreground">
+                  {getBilingualContent(item.name, locale)}
+                </h3>
+              </div>
+            )}
             <p className="text-sm text-muted-foreground mb-2">
               {getBilingualContent(item.description, locale)}
             </p>
@@ -245,6 +314,20 @@ export default function MenuPage({ params }: { params: Promise<{ locale: string 
       {/* Header */}
       <section className="bg-gradient-to-r from-restaurant-accent/10 to-surface border-b border-border">
         <div className="container mx-auto px-4 py-8">
+          {/* Back Button */}
+          <div className="mb-4">
+            <Link href={`/${locale}/restaurant`}>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-muted-foreground hover:text-foreground hover:bg-restaurant-accent/10"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                {locale === 'en' ? 'Back to Restaurant' : 'Retour au Restaurant'}
+              </Button>
+            </Link>
+          </div>
+          
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <Badge variant="restaurant" className="mb-2 bg-restaurant-accent/20 text-restaurant-accent border-restaurant-accent/30">

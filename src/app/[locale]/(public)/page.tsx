@@ -63,42 +63,51 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   
   return (
     <PublicLayout locale={locale as Locale}>
-      {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden noise-overlay">
-        {/* Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-dark via-surface to-dark">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-secondary/10 via-transparent to-transparent" />
+      {/* Hero Section - Night Club Theme */}
+      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+        {/* Night Club Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url('https://images.unsplash.com/photo-1566417713940-fe7c737a9ef2?w=1920&q=80')`,
+          }}
+        >
+          {/* Dramatic gradient overlays for nightclub atmosphere */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/90" />
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/30 via-transparent to-secondary/20" />
+          {/* Neon glow effects */}
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px]" />
+          <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-secondary/20 rounded-full blur-[100px]" />
         </div>
 
         {/* Content */}
         <div className="relative z-10 container mx-auto px-4 py-20 text-center">
-          <Badge variant="restaurant" className="mb-6 text-sm">
-            <Clock className="h-4 w-4 mr-2" />
-            {locale === 'en' ? 'Now Open' : 'Ouvert Maintenant'}
+          <Badge variant="club" className="mb-6 text-sm bg-primary/20 border-primary/50 text-white">
+            <Music className="h-4 w-4 mr-2" />
+            {locale === 'en' ? 'Empire Night Club' : 'Empire Boîte de Nuit'}
           </Badge>
 
-          <h1 className="text-5xl md:text-7xl font-bold mb-6">
-            <span className="text-gradient-primary">Empire</span>
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white">
+            <span className="text-primary drop-shadow-[0_0_30px_rgba(255,0,85,0.5)]">Empire</span>
             <br />
-            <span className="text-foreground">Hybrid Lounge</span>
+            <span className="text-secondary drop-shadow-[0_0_20px_rgba(0,240,255,0.4)]">Hybrid Lounge</span>
           </h1>
 
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-8">
+          <p className="text-xl md:text-2xl text-white/80 max-w-2xl mx-auto mb-8">
             {locale === 'en'
-              ? 'Daytime restaurant and night club experience. Fine dining meets nightlife entertainment.'
-              : "Expérience de restaurant en journée et boîte de nuit. Gastronomie rencontre divertissements nocturnes."}
+              ? 'Where daytime fine dining meets nighttime entertainment. Dance, dine, and create unforgettable memories in Limbe.'
+              : "Où la gastronomie diurne rencontre les divertissements nocturnes. Dansez, dinez et créez des souvenirs inoubliables à Limbe."}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href={`/${locale}/restaurant`}>
-              <Button size="lg" className="btn-primary w-full sm:w-auto">
+              <Button size="lg" className="btn-primary w-full sm:w-auto bg-restaurant-accent hover:bg-restaurant-accent/90 text-black border-0">
                 <Utensils className="h-5 w-5 mr-2" />
                 {t('restaurant.orderNow', locale as Locale)}
               </Button>
             </Link>
             <Link href={`/${locale}/events`}>
-              <Button size="lg" variant="outline" className="btn-outline w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="btn-outline w-full sm:w-auto border-primary text-primary hover:bg-primary hover:text-white">
                 <Calendar className="h-5 w-5 mr-2" />
                 {t('nav.events', locale as Locale)}
               </Button>
@@ -106,8 +115,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </div>
 
           {/* Location */}
-          <div className="mt-12 flex items-center justify-center gap-2 text-muted-foreground">
-            <MapPin className="h-5 w-5 text-primary" />
+          <div className="mt-12 flex items-center justify-center gap-2 text-white/70">
+            <MapPin className="h-5 w-5 text-secondary" />
             <span className="text-sm">
               {locale === 'en'
                 ? 'Sappa Road, Limbe, Cameroon'
@@ -118,7 +127,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
         {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <ChevronRight className="h-6 w-6 text-muted-foreground rotate-90" />
+          <ChevronRight className="h-6 w-6 text-white/50 rotate-90" />
         </div>
       </section>
 
