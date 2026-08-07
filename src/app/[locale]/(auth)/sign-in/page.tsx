@@ -120,7 +120,7 @@ export default function SignInPage({ params }: SignInPageProps) {
 
               <div className="flex justify-end">
                 <Link 
-                  href={`/${locale}/auth/forgot-password`}
+                  href={`/${locale}/forgot-password`}
                   className="text-sm text-primary hover:underline"
                 >
                   {t('auth.forgotPassword', locale)}
@@ -138,7 +138,7 @@ export default function SignInPage({ params }: SignInPageProps) {
 
             <div className="mt-6 text-center text-sm text-muted-foreground">
               {locale === 'en' ? "Don't have an account?" : "Vous n'avez pas de compte?"}{' '}
-              <Link href={`/${locale}/auth/sign-up`} className="text-primary hover:underline">
+              <Link href={`/${locale}/sign-up`} className="text-primary hover:underline">
                 {t('auth.signUp', locale)}
               </Link>
             </div>

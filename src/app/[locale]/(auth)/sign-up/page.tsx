@@ -218,7 +218,7 @@ export default function SignUpPage({ params }: SignUpPageProps) {
 
             <div className="mt-6 text-center text-sm text-muted-foreground">
               {locale === 'en' ? 'Already have an account?' : 'Vous avez déjà un compte?'}{' '}
-              <Link href={`/${locale}/auth/sign-in`} className="text-primary hover:underline">
+              <Link href={`/${locale}/sign-in`} className="text-primary hover:underline">
                 {t('auth.signIn', locale)}
               </Link>
             </div>

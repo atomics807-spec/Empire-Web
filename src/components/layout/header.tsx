@@ -109,7 +109,7 @@ export function Header({ locale, cartItemCount = 0, isAuthenticated = false }: H
                 </Button>
               </Link>
             ) : (
-              <Link href={`/${locale}/auth/sign-in`}>
+              <Link href={`/${locale}/sign-in`}>
                 <Button variant="outline" size="sm">
                   {t('nav.signIn', locale)}
                 </Button>
