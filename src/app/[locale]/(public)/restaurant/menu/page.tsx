@@ -188,13 +188,12 @@ function MenuItem({ item, locale, orderingAvailable }: MenuItemProps) {
       price: item.price,
     })
     
-    // Show feedback
     setJustAdded(true)
     setTimeout(() => setJustAdded(false), 1500)
   }
 
   return (
-    <Card className="overflow-hidden card-hover border-restaurant-accent/20 hover:border-restaurant-accent/50 transition-all">
+    <Card className="overflow-hidden border-orange-100 hover:border-orange-300 hover:shadow-lg transition-all bg-white">
       {item.image ? (
         <div className="relative h-40 overflow-hidden">
           <img 
@@ -203,59 +202,44 @@ function MenuItem({ item, locale, orderingAvailable }: MenuItemProps) {
             className="w-full h-full object-cover"
           />
           {item.isFeatured && (
-            <Badge variant="vip" className="absolute top-2 right-2">
+            <Badge className="absolute top-2 right-2 bg-amber-400 text-amber-900 border-0">
               <Star className="h-3 w-3 mr-1" />
               {locale === 'en' ? 'Featured' : 'Populaire'}
             </Badge>
           )}
         </div>
       ) : null}
-      <CardContent className={item.image ? "p-4" : "p-4"}>
+      <CardContent className="p-4">
         <div className="flex justify-between items-start gap-4">
           <div className="flex-1">
-            {!item.image && (
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-semibold text-foreground">
-                  {getBilingualContent(item.name, locale)}
-                </h3>
-                {item.isFeatured && (
-                  <Badge variant="vip" size="sm">
-                    <Star className="h-3 w-3 mr-1" />
-                    {locale === 'en' ? 'Featured' : 'Populaire'}
-                  </Badge>
-                )}
-              </div>
-            )}
-            {item.image && (
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-semibold text-foreground">
-                  {getBilingualContent(item.name, locale)}
-                </h3>
-              </div>
-            )}
-            <p className="text-sm text-muted-foreground mb-2">
+            <div className="flex items-center gap-2 mb-1">
+              <h3 className="font-semibold text-gray-900">
+                {getBilingualContent(item.name, locale)}
+              </h3>
+            </div>
+            <p className="text-sm text-gray-500 mb-2">
               {getBilingualContent(item.description, locale)}
             </p>
-            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+            <div className="flex items-center gap-4 text-xs text-gray-500">
               <span className="flex items-center gap-1">
-                <ChefHat className="h-3 w-3 text-restaurant-accent" />
+                <ChefHat className="h-3 w-3 text-orange-500" />
                 {item.prepTime} min
               </span>
               {item.isAvailable ? (
-                <span className="flex items-center gap-1 text-success">
-                  <div className="w-2 h-2 rounded-full bg-success" />
+                <span className="flex items-center gap-1 text-green-600">
+                  <div className="w-2 h-2 rounded-full bg-green-500" />
                   {locale === 'en' ? 'Available' : 'Disponible'}
                 </span>
               ) : (
-                <span className="flex items-center gap-1 text-danger">
-                  <div className="w-2 h-2 rounded-full bg-danger" />
+                <span className="flex items-center gap-1 text-red-500">
+                  <div className="w-2 h-2 rounded-full bg-red-500" />
                   {locale === 'en' ? 'Sold Out' : 'Épuisé'}
                 </span>
               )}
             </div>
           </div>
           <div className="text-right">
-            <p className="text-lg font-bold text-restaurant-accent">
+            <p className="text-lg font-bold text-orange-600">
               {formatPrice(item.price)}
             </p>
           </div>
@@ -263,14 +247,14 @@ function MenuItem({ item, locale, orderingAvailable }: MenuItemProps) {
         
         {/* Add to Cart */}
         {item.isAvailable && (
-          <div className="mt-4 pt-4 border-t border-border">
+          <div className="mt-4 pt-4 border-t border-gray-100">
             {inCart ? (
               <div className="flex items-center justify-between gap-2">
-                <span className="text-sm text-restaurant-accent font-medium">
+                <span className="text-sm text-orange-600 font-medium">
                   {quantity} in cart
                 </span>
                 <Link href={`/${locale}/restaurant/cart`}>
-                  <Button variant="outline" size="sm" className="border-restaurant-accent text-restaurant-accent hover:bg-restaurant-accent/10">
+                  <Button variant="outline" size="sm" className="border-orange-300 text-orange-600 hover:bg-orange-50">
                     <ShoppingCart className="h-4 w-4 mr-2" />
                     {locale === 'en' ? 'View Cart' : 'Voir Panier'}
                   </Button>
@@ -278,7 +262,7 @@ function MenuItem({ item, locale, orderingAvailable }: MenuItemProps) {
               </div>
             ) : (
               <Button 
-                className="w-full btn-restaurant" 
+                className="w-full bg-orange-600 hover:bg-orange-700 text-white border-0" 
                 disabled={!orderingAvailable}
                 onClick={handleAddToCart}
               >
@@ -310,9 +294,9 @@ export default function MenuPage({ params }: { params: Promise<{ locale: string 
   params.then(p => setLocale(p.locale as 'en' | 'fr'))
   
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <section className="bg-gradient-to-r from-restaurant-accent/10 to-surface border-b border-border">
+    <div className="min-h-screen bg-gray-50">
+      {/* Header - Light Theme */}
+      <section className="bg-white border-b border-gray-200 shadow-sm">
         <div className="container mx-auto px-4 py-8">
           {/* Back Button */}
           <div className="mb-4">
@@ -320,7 +304,7 @@ export default function MenuPage({ params }: { params: Promise<{ locale: string 
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="text-muted-foreground hover:text-foreground hover:bg-restaurant-accent/10"
+                className="text-gray-600 hover:text-gray-900 hover:bg-orange-50"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 {locale === 'en' ? 'Back to Restaurant' : 'Retour au Restaurant'}
@@ -330,14 +314,14 @@ export default function MenuPage({ params }: { params: Promise<{ locale: string 
           
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <Badge variant="restaurant" className="mb-2 bg-restaurant-accent/20 text-restaurant-accent border-restaurant-accent/30">
+              <Badge className="mb-2 bg-orange-100 text-orange-700 border-orange-200">
                 <Utensils className="h-4 w-4 mr-2" />
                 {t('nav.restaurant', locale)}
               </Badge>
-              <h1 className="text-3xl font-bold text-foreground">
+              <h1 className="text-3xl font-bold text-gray-900">
                 {locale === 'en' ? 'Our Menu' : 'Notre Menu'}
               </h1>
-              <p className="text-muted-foreground mt-1">
+              <p className="text-gray-500 mt-1">
                 {locale === 'en' 
                   ? 'Fresh, authentic Cameroonian cuisine'
                   : 'Cuisine camerounaise authentique et fraîche'}
@@ -345,9 +329,9 @@ export default function MenuPage({ params }: { params: Promise<{ locale: string 
             </div>
             <div className="flex items-center gap-4">
               {/* Status */}
-              <div className={`flex items-center gap-2 px-4 py-2 rounded-lg ${restaurantStatus.isOpen ? 'bg-success/20' : 'bg-danger/20'}`}>
-                <div className={`w-2 h-2 rounded-full ${restaurantStatus.isOpen ? 'bg-success animate-pulse' : 'bg-danger'}`} />
-                <span className={`text-sm font-medium ${restaurantStatus.isOpen ? 'text-success' : 'text-danger'}`}>
+              <div className={`flex items-center gap-2 px-4 py-2 rounded-lg ${restaurantStatus.isOpen ? 'bg-green-100' : 'bg-red-100'}`}>
+                <div className={`w-2 h-2 rounded-full ${restaurantStatus.isOpen ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
+                <span className={`text-sm font-medium ${restaurantStatus.isOpen ? 'text-green-700' : 'text-red-700'}`}>
                   {restaurantStatus.isOpen ? t('restaurant.open', locale) : t('restaurant.closed', locale)}
                 </span>
               </div>
@@ -356,12 +340,12 @@ export default function MenuPage({ params }: { params: Promise<{ locale: string 
               <Link href={`/${locale}/restaurant/cart`}>
                 <Button 
                   variant="outline" 
-                  className={`relative border-restaurant-accent/50 ${itemCount > 0 ? 'bg-restaurant-accent/10 border-restaurant-accent text-restaurant-accent' : 'text-restaurant-accent hover:bg-restaurant-accent/10'}`}
+                  className={`relative border-orange-200 ${itemCount > 0 ? 'bg-orange-50 border-orange-400 text-orange-700' : 'text-orange-600 hover:bg-orange-50'}`}
                 >
-                  <ShoppingCart className={`h-5 w-5 mr-2 ${itemCount > 0 ? 'text-restaurant-accent' : ''}`} />
+                  <ShoppingCart className={`h-5 w-5 mr-2 ${itemCount > 0 ? 'text-orange-600' : ''}`} />
                   {t('nav.cart', locale)}
                   {itemCount > 0 && (
-                    <span className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-restaurant-accent text-white text-xs flex items-center justify-center font-bold">
+                    <span className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-orange-600 text-white text-xs flex items-center justify-center font-bold">
                       {itemCount > 9 ? '9+' : itemCount}
                     </span>
                   )}
@@ -374,9 +358,9 @@ export default function MenuPage({ params }: { params: Promise<{ locale: string 
 
       {/* Ordering Notice */}
       {!restaurantStatus.orderingAvailable && (
-        <div className="bg-warning/10 border-b border-warning/30">
+        <div className="bg-amber-50 border-b border-amber-200">
           <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center gap-3 text-warning">
+            <div className="flex items-center gap-3 text-amber-700">
               <AlertCircle className="h-5 w-5 flex-shrink-0" />
               <p className="text-sm">
                 {locale === 'en'
@@ -388,15 +372,15 @@ export default function MenuPage({ params }: { params: Promise<{ locale: string 
         </div>
       )}
 
-      {/* Menu Content */}
-      <section className="py-8 bg-background">
+      {/* Menu Content - Light Theme */}
+      <section className="py-8 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-4 gap-8">
             {/* Categories Sidebar */}
             <div className="lg:col-span-1">
               <div className="sticky top-24">
-                <Card className="p-4 border-restaurant-accent/20">
-                  <h3 className="font-semibold text-foreground mb-4">
+                <Card className="p-4 border-gray-200 bg-white shadow-sm">
+                  <h3 className="font-semibold text-gray-900 mb-4">
                     {locale === 'en' ? 'Categories' : 'Catégories'}
                   </h3>
                   <nav className="space-y-1">
@@ -404,10 +388,10 @@ export default function MenuPage({ params }: { params: Promise<{ locale: string 
                       <a
                         key={category.id}
                         href={`#${category.slug}`}
-                        className="block px-3 py-2 rounded-lg text-sm text-muted-foreground hover:bg-restaurant-accent/10 hover:text-restaurant-accent transition-colors"
+                        className="block px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-orange-50 hover:text-orange-700 transition-colors"
                       >
                         {getBilingualContent(category.names, locale)}
-                        <span className="text-xs text-muted-foreground ml-2">
+                        <span className="text-xs text-gray-400 ml-2">
                           ({category.items.length})
                         </span>
                       </a>
@@ -416,17 +400,17 @@ export default function MenuPage({ params }: { params: Promise<{ locale: string 
                 </Card>
 
                 {/* Time Info */}
-                <Card className="p-4 mt-4 border-restaurant-accent/20">
+                <Card className="p-4 mt-4 border-gray-200 bg-white shadow-sm">
                   <div className="flex items-center gap-3 mb-3">
-                    <Clock className="h-5 w-5 text-restaurant-accent" />
-                    <span className="font-medium text-foreground">
-                      {locale === 'en' ? 'Opening Hours' : 'Heures d\'Ouverture'}
+                    <Clock className="h-5 w-5 text-orange-600" />
+                    <span className="font-medium text-gray-900">
+                      {locale === 'en' ? 'Opening Hours' : "Heures d'Ouverture"}
                     </span>
                   </div>
-                  <div className="text-sm text-muted-foreground space-y-1">
+                  <div className="text-sm text-gray-600 space-y-1">
                     <p>{locale === 'en' ? 'Daily' : 'Tous les jours'}: 8:00 - 17:30</p>
                     {restaurantStatus.isOpen && (
-                      <p className="text-success font-medium">
+                      <p className="text-green-600 font-medium">
                         {locale === 'en' ? 'Closes at' : 'Ferme à'} {restaurantStatus.closingTime}
                       </p>
                     )}
@@ -439,8 +423,8 @@ export default function MenuPage({ params }: { params: Promise<{ locale: string 
             <div className="lg:col-span-3 space-y-8">
               {categories.map((category) => (
                 <div key={category.id} id={category.slug}>
-                  <h2 className="text-2xl font-bold text-foreground mb-4 flex items-center gap-2">
-                    <span className="w-1 h-8 bg-restaurant-accent rounded-full" />
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <span className="w-1 h-8 bg-orange-500 rounded-full" />
                     {getBilingualContent(category.names, locale)}
                   </h2>
                   <div className="grid md:grid-cols-2 gap-4">
@@ -461,23 +445,23 @@ export default function MenuPage({ params }: { params: Promise<{ locale: string 
       </section>
 
       {/* Late Night Section */}
-      <section className="py-12 bg-gradient-to-r from-surface to-restaurant-accent/5 border-t border-border">
+      <section className="py-12 bg-gradient-to-r from-gray-100 to-orange-50 border-t border-gray-200">
         <div className="container mx-auto px-4">
           <div className="text-center">
-            <Badge variant="club" className="mb-4">
+            <Badge className="mb-4 bg-purple-100 text-purple-700 border-purple-200">
               <Leaf className="h-4 w-4 mr-2" />
               {t('restaurant.lateNight', locale)}
             </Badge>
-            <h2 className="text-2xl font-bold text-foreground mb-4">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
               {locale === 'en' ? 'Craving Something Late?' : 'Envie de Quelque Chose Tard?'}
             </h2>
-            <p className="text-muted-foreground max-w-xl mx-auto mb-6">
+            <p className="text-gray-600 max-w-xl mx-auto mb-6">
               {locale === 'en'
                 ? 'Some of our menu items are available late night at the club. Look for the special badge!'
                 : 'Certains de nos plats sont disponibles tard la nuit à la boîte. Cherchez le badge spécial!'}
             </p>
             <Link href={`/${locale}/events`}>
-              <Button variant="club">
+              <Button className="bg-purple-600 hover:bg-purple-700 text-white border-0">
                 {locale === 'en' ? 'View Club Events' : 'Voir les Événements'}
               </Button>
             </Link>
