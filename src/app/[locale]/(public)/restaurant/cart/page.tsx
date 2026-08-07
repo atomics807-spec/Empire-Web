@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Minus, Plus, Trash2, ShoppingBag, Clock, MapPin, ArrowLeft } from 'lucide-react'
+import { Minus, Plus, Trash2, ShoppingBag, Clock, MapPin, ArrowLeft, Truck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -16,6 +16,8 @@ const mockCartItems = [
   { id: '2', name: 'Ndolè Fingers', nameFr: 'Doigts de Ndolé', price: 2000, quantity: 1 },
 ]
 
+type OrderType = 'dine-in' | 'takeaway' | 'delivery'
+
 interface CartPageProps {
   params: Promise<{ locale: string }>
 }
@@ -24,15 +26,16 @@ export default function CartPage({ params }: CartPageProps) {
   const router = useRouter()
   const [locale, setLocale] = useState<'en' | 'fr'>('en')
   const [cartItems, setCartItems] = useState(mockCartItems)
-  const [orderType, setOrderType] = useState<'dine-in' | 'takeaway'>('dine-in')
+  const [orderType, setOrderType] = useState<OrderType>('dine-in')
   const [tableNumber, setTableNumber] = useState('')
+  const [deliveryAddress, setDeliveryAddress] = useState('')
   const [customerNote, setCustomerNote] = useState('')
 
   // Update locale when params resolve
   params.then(p => setLocale(p.locale as 'en' | 'fr'))
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const fee = orderType === 'takeaway' ? 500 : 0
+  const fee = orderType === 'takeaway' ? 500 : orderType === 'delivery' ? 1500 : 0
   const total = subtotal + fee
 
   const updateQuantity = (id: string, delta: number) => {
@@ -56,7 +59,17 @@ export default function CartPage({ params }: CartPageProps) {
       alert(locale === 'en' ? 'Please enter your table number' : 'Veuillez entrer votre numéro de table')
       return
     }
+    if (orderType === 'delivery' && !deliveryAddress) {
+      alert(locale === 'en' ? 'Please enter your delivery address' : 'Veuillez entrer votre adresse de livraison')
+      return
+    }
     router.push(`/${locale}/checkout`)
+  }
+
+  const orderTypeLabels = {
+    'dine-in': { en: 'Dine-in', fr: 'Sur Place', icon: MapPin },
+    'takeaway': { en: 'Takeaway', fr: 'À Emporter', icon: ShoppingBag },
+    'delivery': { en: 'Delivery', fr: 'Livraison', icon: Truck },
   }
 
   if (cartItems.length === 0) {
@@ -105,6 +118,9 @@ export default function CartPage({ params }: CartPageProps) {
             <h1 className="text-xl font-semibold text-foreground">
               {locale === 'en' ? 'Your Cart' : 'Votre Panier'}
             </h1>
+            <span className="ml-auto bg-restaurant-accent text-white text-xs font-bold px-2 py-1 rounded-full">
+              {cartItems.reduce((sum, item) => sum + item.quantity, 0)} {locale === 'en' ? 'items' : 'articles'}
+            </span>
           </div>
         </div>
       </header>
@@ -164,23 +180,21 @@ export default function CartPage({ params }: CartPageProps) {
                 {/* Order Type */}
                 <div className="space-y-2">
                   <Label>{locale === 'en' ? 'Order Type' : 'Type de Commande'}</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button
-                      variant={orderType === 'dine-in' ? 'default' : 'outline'}
-                      onClick={() => setOrderType('dine-in')}
-                      className={orderType === 'dine-in' ? 'bg-restaurant-accent' : ''}
-                    >
-                      <MapPin className="h-4 w-4 mr-2" />
-                      {locale === 'en' ? 'Dine-in' : 'Sur Place'}
-                    </Button>
-                    <Button
-                      variant={orderType === 'takeaway' ? 'default' : 'outline'}
-                      onClick={() => setOrderType('takeaway')}
-                      className={orderType === 'takeaway' ? 'bg-restaurant-accent' : ''}
-                    >
-                      <ShoppingBag className="h-4 w-4 mr-2" />
-                      {locale === 'en' ? 'Takeaway' : 'À Emporter'}
-                    </Button>
+                  <div className="grid grid-cols-3 gap-2">
+                    {(Object.keys(orderTypeLabels) as OrderType[]).map(type => {
+                      const { en, fr, icon: Icon } = orderTypeLabels[type]
+                      return (
+                        <Button
+                          key={type}
+                          variant={orderType === type ? 'default' : 'outline'}
+                          onClick={() => setOrderType(type)}
+                          className={`flex-col h-auto py-3 ${orderType === type ? 'bg-restaurant-accent' : ''}`}
+                        >
+                          <Icon className="h-5 w-5 mb-1" />
+                          <span className="text-xs">{locale === 'en' ? en : fr}</span>
+                        </Button>
+                      )
+                    })}
                   </div>
                 </div>
 
@@ -197,6 +211,28 @@ export default function CartPage({ params }: CartPageProps) {
                       min="1"
                       max="50"
                     />
+                  </div>
+                )}
+
+                {/* Delivery Address */}
+                {orderType === 'delivery' && (
+                  <div className="space-y-2">
+                    <Label htmlFor="address">{locale === 'en' ? 'Delivery Address' : 'Adresse de Livraison'}</Label>
+                    <textarea
+                      id="address"
+                      className="w-full px-3 py-2 bg-input border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-restaurant-accent"
+                      rows={3}
+                      placeholder={locale === 'en' 
+                        ? 'Enter your full address with landmarks...'
+                        : 'Entrez votre adresse complète avec repères...'}
+                      value={deliveryAddress}
+                      onChange={(e) => setDeliveryAddress(e.target.value)}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      {locale === 'en' 
+                        ? 'Delivery fee: 1,500 XAF. Delivery within Limbe.'
+                        : 'Frais de livraison: 1 500 XAF. Livraison à Limbe.'}
+                    </p>
                   </div>
                 )}
 
@@ -220,7 +256,12 @@ export default function CartPage({ params }: CartPageProps) {
                   </div>
                   {fee > 0 && (
                     <div className="flex justify-between text-muted-foreground">
-                      <span>{locale === 'en' ? 'Packaging Fee' : 'Frais d\'emballage'}</span>
+                      <span>
+                        {orderType === 'takeaway' 
+                          ? (locale === 'en' ? 'Packaging Fee' : 'Frais d\'emballage')
+                          : (locale === 'en' ? 'Delivery Fee' : 'Frais de livraison')
+                        }
+                      </span>
                       <span>{fee.toLocaleString()} XAF</span>
                     </div>
                   )}
