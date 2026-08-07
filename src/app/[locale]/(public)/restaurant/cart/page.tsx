@@ -3,18 +3,14 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Minus, Plus, Trash2, ShoppingBag, Clock, MapPin, ArrowLeft, Truck } from 'lucide-react'
+import { Minus, Plus, Trash2, ShoppingBag, MapPin, ArrowLeft, Truck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { type Locale } from '@/lib/i18n'
-
-// Mock cart state - in production, this would come from context/localStorage
-const mockCartItems = [
-  { id: '1', name: 'Grilled Tilapia', nameFr: 'Tilapia Grillé', price: 4500, quantity: 2 },
-  { id: '2', name: 'Ndolè Fingers', nameFr: 'Doigts de Ndolé', price: 2000, quantity: 1 },
-]
+import { useCart } from '@/lib/cart/context'
+import { formatPrice } from '@/lib/utils'
+import { getBilingualContent } from '@/lib/i18n'
 
 type OrderType = 'dine-in' | 'takeaway' | 'delivery'
 
@@ -25,36 +21,21 @@ interface CartPageProps {
 export default function CartPage({ params }: CartPageProps) {
   const router = useRouter()
   const [locale, setLocale] = useState<'en' | 'fr'>('en')
-  const [cartItems, setCartItems] = useState(mockCartItems)
   const [orderType, setOrderType] = useState<OrderType>('dine-in')
   const [tableNumber, setTableNumber] = useState('')
   const [deliveryAddress, setDeliveryAddress] = useState('')
   const [customerNote, setCustomerNote] = useState('')
+  const { items, updateQuantity, removeItem, subtotal } = useCart()
 
   // Update locale when params resolve
   params.then(p => setLocale(p.locale as 'en' | 'fr'))
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const fee = orderType === 'takeaway' ? 500 : orderType === 'delivery' ? 1500 : 0
   const total = subtotal + fee
 
-  const updateQuantity = (id: string, delta: number) => {
-    setCartItems(items =>
-      items.map(item => {
-        if (item.id === id) {
-          const newQty = item.quantity + delta
-          return newQty > 0 ? { ...item, quantity: newQty } : item
-        }
-        return item
-      }).filter(item => item.quantity > 0)
-    )
-  }
-
-  const removeItem = (id: string) => {
-    setCartItems(items => items.filter(item => item.id !== id))
-  }
-
   const handleCheckout = () => {
+    if (items.length === 0) return
+    
     if (orderType === 'dine-in' && !tableNumber) {
       alert(locale === 'en' ? 'Please enter your table number' : 'Veuillez entrer votre numéro de table')
       return
@@ -72,7 +53,9 @@ export default function CartPage({ params }: CartPageProps) {
     'delivery': { en: 'Delivery', fr: 'Livraison', icon: Truck },
   }
 
-  if (cartItems.length === 0) {
+  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0)
+
+  if (items.length === 0) {
     return (
       <div className="min-h-screen bg-background">
         <header className="border-b border-border bg-surface sticky top-0 z-50">
@@ -98,7 +81,7 @@ export default function CartPage({ params }: CartPageProps) {
               : 'Ajoutez de délicieux plats depuis notre menu'}
           </p>
           <Link href={`/${locale}/restaurant/menu`}>
-            <Button className="bg-restaurant-accent hover:bg-restaurant-accent/90">
+            <Button className="btn-restaurant">
               {locale === 'en' ? 'Browse Menu' : 'Voir le Menu'}
             </Button>
           </Link>
@@ -119,7 +102,7 @@ export default function CartPage({ params }: CartPageProps) {
               {locale === 'en' ? 'Your Cart' : 'Votre Panier'}
             </h1>
             <span className="ml-auto bg-restaurant-accent text-white text-xs font-bold px-2 py-1 rounded-full">
-              {cartItems.reduce((sum, item) => sum + item.quantity, 0)} {locale === 'en' ? 'items' : 'articles'}
+              {itemCount} {locale === 'en' ? 'items' : 'articles'}
             </span>
           </div>
         </div>
@@ -129,42 +112,50 @@ export default function CartPage({ params }: CartPageProps) {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
-            {cartItems.map(item => (
-              <Card key={item.id}>
+            {items.map(item => (
+              <Card key={item.id} className="border-restaurant-accent/20">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <h3 className="font-semibold text-foreground">
-                        {locale === 'en' ? item.name : item.nameFr}
+                        {getBilingualContent(item.name, locale)}
                       </h3>
-                      <p className="text-restaurant-accent font-medium">
-                        {item.price.toLocaleString()} XAF
+                      <p className="text-restaurant-accent font-bold">
+                        {formatPrice(item.price)}
                       </p>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="flex items-center border border-border rounded-lg">
+                      <div className="flex items-center border border-border rounded-lg bg-surface-elevated">
                         <button
-                          onClick={() => updateQuantity(item.id, -1)}
-                          className="p-2 text-muted-foreground hover:text-foreground"
+                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+                          aria-label="Decrease quantity"
                         >
                           <Minus className="h-4 w-4" />
                         </button>
-                        <span className="w-8 text-center font-medium">{item.quantity}</span>
+                        <span className="w-8 text-center font-bold">{item.quantity}</span>
                         <button
-                          onClick={() => updateQuantity(item.id, 1)}
-                          className="p-2 text-muted-foreground hover:text-foreground"
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+                          aria-label="Increase quantity"
                         >
                           <Plus className="h-4 w-4" />
                         </button>
                       </div>
                       <button
                         onClick={() => removeItem(item.id)}
-                        className="p-2 text-danger hover:bg-danger/10 rounded-lg"
+                        className="p-2 text-danger hover:bg-danger/10 rounded-lg transition-colors"
+                        aria-label="Remove item"
                       >
                         <Trash2 className="h-5 w-5" />
                       </button>
                     </div>
                   </div>
+                  {item.instructions && (
+                    <p className="text-xs text-muted-foreground mt-2 italic">
+                      {item.instructions}
+                    </p>
+                  )}
                 </CardContent>
               </Card>
             ))}
@@ -172,9 +163,9 @@ export default function CartPage({ params }: CartPageProps) {
 
           {/* Order Summary */}
           <div className="space-y-6">
-            <Card>
+            <Card className="border-restaurant-accent/30">
               <CardHeader>
-                <CardTitle>{locale === 'en' ? 'Order Summary' : 'Résumé de la Commande'}</CardTitle>
+                <CardTitle className="text-restaurant-accent">{locale === 'en' ? 'Order Summary' : 'Résumé de la Commande'}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* Order Type */}
@@ -188,7 +179,7 @@ export default function CartPage({ params }: CartPageProps) {
                           key={type}
                           variant={orderType === type ? 'default' : 'outline'}
                           onClick={() => setOrderType(type)}
-                          className={`flex-col h-auto py-3 ${orderType === type ? 'bg-restaurant-accent' : ''}`}
+                          className={`flex-col h-auto py-3 transition-all ${orderType === type ? 'btn-restaurant' : 'border-restaurant-accent/50 text-restaurant-accent hover:bg-restaurant-accent/10'}`}
                         >
                           <Icon className="h-5 w-5 mb-1" />
                           <span className="text-xs">{locale === 'en' ? en : fr}</span>
@@ -210,6 +201,7 @@ export default function CartPage({ params }: CartPageProps) {
                       onChange={(e) => setTableNumber(e.target.value)}
                       min="1"
                       max="50"
+                      className="border-restaurant-accent/30 focus:border-restaurant-accent"
                     />
                   </div>
                 )}
@@ -252,7 +244,7 @@ export default function CartPage({ params }: CartPageProps) {
                 <div className="border-t border-border pt-4 space-y-2">
                   <div className="flex justify-between text-muted-foreground">
                     <span>{locale === 'en' ? 'Subtotal' : 'Sous-total'}</span>
-                    <span>{subtotal.toLocaleString()} XAF</span>
+                    <span>{formatPrice(subtotal)}</span>
                   </div>
                   {fee > 0 && (
                     <div className="flex justify-between text-muted-foreground">
@@ -262,17 +254,17 @@ export default function CartPage({ params }: CartPageProps) {
                           : (locale === 'en' ? 'Delivery Fee' : 'Frais de livraison')
                         }
                       </span>
-                      <span>{fee.toLocaleString()} XAF</span>
+                      <span>{formatPrice(fee)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-xl font-bold text-foreground pt-2">
                     <span>{locale === 'en' ? 'Total' : 'Total'}</span>
-                    <span>{total.toLocaleString()} XAF</span>
+                    <span className="text-restaurant-accent">{formatPrice(total)}</span>
                   </div>
                 </div>
 
                 <Button 
-                  className="w-full bg-restaurant-accent hover:bg-restaurant-accent/90"
+                  className="w-full btn-restaurant"
                   onClick={handleCheckout}
                 >
                   {locale === 'en' ? 'Proceed to Payment' : 'Procéder au Paiement'}

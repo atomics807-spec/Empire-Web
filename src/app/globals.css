@@ -42,10 +42,19 @@
   --info: #3b82f6;
 
   /* Domain-specific Accents */
-  --restaurant-accent: #00f0ff;
+  --restaurant-accent: #00d4aa;
+  --restaurant-accent-light: #00f0cc;
+  --restaurant-accent-dark: #00a080;
   --restaurant-accent-foreground: #0b0c10;
   --club-accent: #ff0055;
   --club-accent-foreground: #ffffff;
+  
+  /* Brighter Restaurant Theme */
+  --restaurant-primary: #00d4aa;
+  --restaurant-primary-light: #00f0cc;
+  --restaurant-primary-glow: 0 0 20px rgba(0, 212, 170, 0.4);
+  --restaurant-surface: #0f1f1a;
+  --restaurant-surface-elevated: #1a2f28;
 
   /* Radii */
   --radius-sm: 0.25rem;
@@ -246,6 +255,32 @@
     background-color: color-mix(in srgb, var(--color-vip-gold) 90%, black);
   }
 
+  /* Restaurant button - brighter theme */
+  .btn-restaurant {
+    background-color: var(--restaurant-accent);
+    color: var(--restaurant-accent-foreground);
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+    box-shadow: 0 0 20px rgba(0, 212, 170, 0.3);
+  }
+  .btn-restaurant:hover {
+    background-color: var(--restaurant-accent-light);
+    box-shadow: 0 0 30px rgba(0, 212, 170, 0.5);
+    transform: translateY(-1px);
+  }
+  .btn-restaurant:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--restaurant-accent);
+  }
+  .btn-restaurant:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
   /* Status badges */
   .badge-success {
     background-color: color-mix(in srgb, var(--success) 20%, transparent);
@@ -401,6 +436,20 @@
   50% {
     transform: translateY(-10px);
   }
+}
+
+@keyframes bounce-subtle {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Animation utilities */
+.animate-bounce-subtle {
+  animation: bounce-subtle 0.3s ease-in-out;
 }
 
 /* Reduced motion */

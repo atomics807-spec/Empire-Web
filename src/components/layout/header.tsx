@@ -18,16 +18,17 @@ import {
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { type Locale, t, localeNames } from '@/lib/i18n'
+import { useCart } from '@/lib/cart/context'
 
 interface HeaderProps {
   locale: Locale
-  cartItemCount?: number
   isAuthenticated?: boolean
 }
 
-export function Header({ locale, cartItemCount = 0, isAuthenticated = false }: HeaderProps) {
+export function Header({ locale, isAuthenticated = false }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const pathname = usePathname()
+  const { itemCount } = useCart()
 
   const toggleLanguage = () => {
     const newLocale = locale === 'en' ? 'fr' : 'en'
@@ -89,13 +90,21 @@ export function Header({ locale, cartItemCount = 0, isAuthenticated = false }: H
               <span className="sr-only">{localeNames[locale]}</span>
             </Button>
 
-            {/* Cart */}
+            {/* Cart - Only visible on restaurant-related pages */}
             <Link href={`/${locale}/restaurant/cart`}>
-              <Button variant="ghost" size="icon" className="relative" aria-label="Cart">
-                <ShoppingCart className="h-5 w-5" />
-                {cartItemCount > 0 && (
-                  <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-medium">
-                    {cartItemCount > 9 ? '9+' : cartItemCount}
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="relative transition-all" 
+                aria-label="Cart"
+              >
+                <ShoppingCart className={cn(
+                  "h-5 w-5 transition-transform",
+                  itemCount > 0 && "text-restaurant-accent"
+                )} />
+                {itemCount > 0 && (
+                  <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-restaurant-accent text-restaurant-accent-foreground text-xs flex items-center justify-center font-bold animate-bounce-subtle">
+                    {itemCount > 9 ? '9+' : itemCount}
                   </span>
                 )}
               </Button>

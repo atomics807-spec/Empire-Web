@@ -1,3 +1,6 @@
+'use client'
+
+import { useState } from 'react'
 import Link from 'next/link'
 import { 
   Clock, 
@@ -6,14 +9,16 @@ import {
   Utensils,
   Leaf,
   Star,
-  AlertCircle
+  AlertCircle,
+  Plus,
+  Check
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { PublicLayout } from '@/components/layout/public-layout'
 import { type Locale, t, getBilingualContent } from '@/lib/i18n'
 import { formatPrice } from '@/lib/utils'
+import { useCart } from '@/lib/cart/context'
 
 // Mock menu data
 const categories = [
@@ -110,19 +115,141 @@ const restaurantStatus = {
   orderingAvailable: true,
 }
 
-export default async function MenuPage({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params
+interface MenuItemProps {
+  item: {
+    id: string
+    name: { en: string; fr: string }
+    description: { en: string; fr: string }
+    price: number
+    isAvailable: boolean
+    isFeatured: boolean
+    prepTime: number
+  }
+  locale: 'en' | 'fr'
+  orderingAvailable: boolean
+}
+
+function MenuItem({ item, locale, orderingAvailable }: MenuItemProps) {
+  const { addItem, isInCart, getItemQuantity } = useCart()
+  const [justAdded, setJustAdded] = useState(false)
+  
+  const inCart = isInCart(item.id)
+  const quantity = getItemQuantity(item.id)
+
+  const handleAddToCart = () => {
+    addItem({
+      menuItemId: item.id,
+      name: item.name,
+      price: item.price,
+    })
+    
+    // Show feedback
+    setJustAdded(true)
+    setTimeout(() => setJustAdded(false), 1500)
+  }
+
+  return (
+    <Card className="overflow-hidden card-hover border-restaurant-accent/20 hover:border-restaurant-accent/50 transition-all">
+      <CardContent className="p-4">
+        <div className="flex justify-between items-start gap-4">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-1">
+              <h3 className="font-semibold text-foreground">
+                {getBilingualContent(item.name, locale)}
+              </h3>
+              {item.isFeatured && (
+                <Badge variant="vip" size="sm">
+                  <Star className="h-3 w-3 mr-1" />
+                  {locale === 'en' ? 'Featured' : 'Populaire'}
+                </Badge>
+              )}
+            </div>
+            <p className="text-sm text-muted-foreground mb-2">
+              {getBilingualContent(item.description, locale)}
+            </p>
+            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1">
+                <ChefHat className="h-3 w-3 text-restaurant-accent" />
+                {item.prepTime} min
+              </span>
+              {item.isAvailable ? (
+                <span className="flex items-center gap-1 text-success">
+                  <div className="w-2 h-2 rounded-full bg-success" />
+                  {locale === 'en' ? 'Available' : 'Disponible'}
+                </span>
+              ) : (
+                <span className="flex items-center gap-1 text-danger">
+                  <div className="w-2 h-2 rounded-full bg-danger" />
+                  {locale === 'en' ? 'Sold Out' : 'Épuisé'}
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-lg font-bold text-restaurant-accent">
+              {formatPrice(item.price)}
+            </p>
+          </div>
+        </div>
+        
+        {/* Add to Cart */}
+        {item.isAvailable && (
+          <div className="mt-4 pt-4 border-t border-border">
+            {inCart ? (
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-sm text-restaurant-accent font-medium">
+                  {quantity} in cart
+                </span>
+                <Link href={`/${locale}/restaurant/cart`}>
+                  <Button variant="outline" size="sm" className="border-restaurant-accent text-restaurant-accent hover:bg-restaurant-accent/10">
+                    <ShoppingCart className="h-4 w-4 mr-2" />
+                    {locale === 'en' ? 'View Cart' : 'Voir Panier'}
+                  </Button>
+                </Link>
+              </div>
+            ) : (
+              <Button 
+                className="w-full btn-restaurant" 
+                disabled={!orderingAvailable}
+                onClick={handleAddToCart}
+              >
+                {justAdded ? (
+                  <>
+                    <Check className="h-4 w-4 mr-2" />
+                    {locale === 'en' ? 'Added!' : 'Ajouté!'}
+                  </>
+                ) : (
+                  <>
+                    <Plus className="h-4 w-4 mr-2" />
+                    {t('restaurant.addToCart', locale)}
+                  </>
+                )}
+              </Button>
+            )}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  )
+}
+
+export default function MenuPage({ params }: { params: Promise<{ locale: string }> }) {
+  const [locale, setLocale] = useState<'en' | 'fr'>('en')
+  const { itemCount } = useCart()
+
+  // Update locale when params resolve
+  params.then(p => setLocale(p.locale as 'en' | 'fr'))
   
   return (
-    <PublicLayout locale={locale as Locale}>
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <section className="bg-surface border-b border-border">
+      <section className="bg-gradient-to-r from-restaurant-accent/10 to-surface border-b border-border">
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <Badge variant="restaurant" className="mb-2">
+              <Badge variant="restaurant" className="mb-2 bg-restaurant-accent/20 text-restaurant-accent border-restaurant-accent/30">
                 <Utensils className="h-4 w-4 mr-2" />
-                {t('nav.restaurant', locale as Locale)}
+                {t('nav.restaurant', locale)}
               </Badge>
               <h1 className="text-3xl font-bold text-foreground">
                 {locale === 'en' ? 'Our Menu' : 'Notre Menu'}
@@ -138,15 +265,23 @@ export default async function MenuPage({ params }: { params: Promise<{ locale: s
               <div className={`flex items-center gap-2 px-4 py-2 rounded-lg ${restaurantStatus.isOpen ? 'bg-success/20' : 'bg-danger/20'}`}>
                 <div className={`w-2 h-2 rounded-full ${restaurantStatus.isOpen ? 'bg-success animate-pulse' : 'bg-danger'}`} />
                 <span className={`text-sm font-medium ${restaurantStatus.isOpen ? 'text-success' : 'text-danger'}`}>
-                  {restaurantStatus.isOpen ? t('restaurant.open', locale as Locale) : t('restaurant.closed', locale as Locale)}
+                  {restaurantStatus.isOpen ? t('restaurant.open', locale) : t('restaurant.closed', locale)}
                 </span>
               </div>
               
               {/* Cart */}
               <Link href={`/${locale}/restaurant/cart`}>
-                <Button variant="outline" className="relative">
-                  <ShoppingCart className="h-5 w-5 mr-2" />
-                  {t('nav.cart', locale as Locale)}
+                <Button 
+                  variant="outline" 
+                  className={`relative border-restaurant-accent/50 ${itemCount > 0 ? 'bg-restaurant-accent/10 border-restaurant-accent text-restaurant-accent' : 'text-restaurant-accent hover:bg-restaurant-accent/10'}`}
+                >
+                  <ShoppingCart className={`h-5 w-5 mr-2 ${itemCount > 0 ? 'text-restaurant-accent' : ''}`} />
+                  {t('nav.cart', locale)}
+                  {itemCount > 0 && (
+                    <span className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-restaurant-accent text-white text-xs flex items-center justify-center font-bold">
+                      {itemCount > 9 ? '9+' : itemCount}
+                    </span>
+                  )}
                 </Button>
               </Link>
             </div>
@@ -177,7 +312,7 @@ export default async function MenuPage({ params }: { params: Promise<{ locale: s
             {/* Categories Sidebar */}
             <div className="lg:col-span-1">
               <div className="sticky top-24">
-                <Card className="p-4">
+                <Card className="p-4 border-restaurant-accent/20">
                   <h3 className="font-semibold text-foreground mb-4">
                     {locale === 'en' ? 'Categories' : 'Catégories'}
                   </h3>
@@ -186,9 +321,9 @@ export default async function MenuPage({ params }: { params: Promise<{ locale: s
                       <a
                         key={category.id}
                         href={`#${category.slug}`}
-                        className="block px-3 py-2 rounded-lg text-sm text-muted-foreground hover:bg-surface-elevated hover:text-foreground transition-colors"
+                        className="block px-3 py-2 rounded-lg text-sm text-muted-foreground hover:bg-restaurant-accent/10 hover:text-restaurant-accent transition-colors"
                       >
-                        {getBilingualContent(category.names, locale as Locale)}
+                        {getBilingualContent(category.names, locale)}
                         <span className="text-xs text-muted-foreground ml-2">
                           ({category.items.length})
                         </span>
@@ -198,7 +333,7 @@ export default async function MenuPage({ params }: { params: Promise<{ locale: s
                 </Card>
 
                 {/* Time Info */}
-                <Card className="p-4 mt-4">
+                <Card className="p-4 mt-4 border-restaurant-accent/20">
                   <div className="flex items-center gap-3 mb-3">
                     <Clock className="h-5 w-5 text-restaurant-accent" />
                     <span className="font-medium text-foreground">
@@ -221,68 +356,18 @@ export default async function MenuPage({ params }: { params: Promise<{ locale: s
             <div className="lg:col-span-3 space-y-8">
               {categories.map((category) => (
                 <div key={category.id} id={category.slug}>
-                  <h2 className="text-2xl font-bold text-foreground mb-4">
-                    {getBilingualContent(category.names, locale as Locale)}
+                  <h2 className="text-2xl font-bold text-foreground mb-4 flex items-center gap-2">
+                    <span className="w-1 h-8 bg-restaurant-accent rounded-full" />
+                    {getBilingualContent(category.names, locale)}
                   </h2>
                   <div className="grid md:grid-cols-2 gap-4">
                     {category.items.map((item) => (
-                      <Card key={item.id} className="overflow-hidden card-hover">
-                        <CardContent className="p-4">
-                          <div className="flex justify-between items-start gap-4">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <h3 className="font-semibold text-foreground">
-                                  {getBilingualContent(item.name, locale as Locale)}
-                                </h3>
-                                {item.isFeatured && (
-                                  <Badge variant="vip" size="sm">
-                                    <Star className="h-3 w-3 mr-1" />
-                                    {locale === 'en' ? 'Featured' : 'Populaire'}
-                                  </Badge>
-                                )}
-                              </div>
-                              <p className="text-sm text-muted-foreground mb-2">
-                                {getBilingualContent(item.description, locale as Locale)}
-                              </p>
-                              <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                                <span className="flex items-center gap-1">
-                                  <ChefHat className="h-3 w-3" />
-                                  {item.prepTime} min
-                                </span>
-                                {item.isAvailable ? (
-                                  <span className="flex items-center gap-1 text-success">
-                                    <div className="w-2 h-2 rounded-full bg-success" />
-                                    {locale === 'en' ? 'Available' : 'Disponible'}
-                                  </span>
-                                ) : (
-                                  <span className="flex items-center gap-1 text-danger">
-                                    <div className="w-2 h-2 rounded-full bg-danger" />
-                                    {locale === 'en' ? 'Sold Out' : 'Épuisé'}
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                            <div className="text-right">
-                              <p className="text-lg font-bold text-primary">
-                                {formatPrice(item.price)}
-                              </p>
-                            </div>
-                          </div>
-                          
-                          {/* Add to Cart */}
-                          {item.isAvailable && (
-                            <div className="mt-4 pt-4 border-t border-border">
-                              <Button 
-                                className="w-full btn-restaurant" 
-                                disabled={!restaurantStatus.orderingAvailable}
-                              >
-                                <Utensils className="h-4 w-4 mr-2" />
-                                {t('restaurant.addToCart', locale as Locale)}
-                              </Button>
-                            </div>
-                          )}
-                        </CardContent>
-                      </Card>
+                      <MenuItem 
+                        key={item.id} 
+                        item={item} 
+                        locale={locale} 
+                        orderingAvailable={restaurantStatus.orderingAvailable}
+                      />
                     ))}
                   </div>
                 </div>
@@ -293,12 +378,12 @@ export default async function MenuPage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* Late Night Section */}
-      <section className="py-12 bg-surface border-t border-border">
+      <section className="py-12 bg-gradient-to-r from-surface to-restaurant-accent/5 border-t border-border">
         <div className="container mx-auto px-4">
           <div className="text-center">
             <Badge variant="club" className="mb-4">
               <Leaf className="h-4 w-4 mr-2" />
-              {t('restaurant.lateNight', locale as Locale)}
+              {t('restaurant.lateNight', locale)}
             </Badge>
             <h2 className="text-2xl font-bold text-foreground mb-4">
               {locale === 'en' ? 'Craving Something Late?' : 'Envie de Quelque Chose Tard?'}
@@ -316,6 +401,6 @@ export default async function MenuPage({ params }: { params: Promise<{ locale: s
           </div>
         </div>
       </section>
-    </PublicLayout>
+    </div>
   )
 }
