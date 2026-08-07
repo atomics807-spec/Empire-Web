@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ArrowLeft, Calendar, Clock, MapPin, Users, Ticket, ChevronRight } from 'lucide-react'
+import { ArrowLeft, Calendar, Clock, MapPin, Users, Ticket, ChevronRight, CheckCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
@@ -180,42 +180,86 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
           <div className="container mx-auto">
             <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
               <Ticket className="h-6 w-6 text-club-accent" />
-              {locale === 'en' ? 'Get Tickets' : 'Obtenir des Billets'}
+              {locale === 'en' ? 'Choose Your Package' : 'Choisissez Votre Package'}
             </h2>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {event.ticketTypes.map((ticket, idx) => (
-                <Card key={idx} className="relative overflow-hidden">
+                <Card key={idx} className={`relative overflow-hidden ${ticket.name.toLowerCase().includes('vip') ? 'border-vip-gold/50 bg-vip-gold/5' : ''}`}>
+                  {ticket.name.toLowerCase().includes('vip') && (
+                    <Badge variant="vip" className="absolute top-3 right-3">
+                      VIP
+                    </Badge>
+                  )}
                   {ticket.price === 0 && (
-                    <div className="absolute top-0 right-0 bg-success text-success-foreground text-xs px-2 py-1 rounded-bl-lg">
-                      FREE
+                    <div className="absolute top-3 left-3 bg-success text-success-foreground text-xs px-2 py-1 rounded-lg">
+                      FREE ENTRY
                     </div>
                   )}
                   <CardContent className="p-6">
-                    <h3 className="text-xl font-semibold text-foreground mb-2">{ticket.name}</h3>
-                    <p className="text-2xl font-bold text-club-accent mb-2">
+                    <h3 className="text-xl font-bold text-foreground mb-1">{ticket.name}</h3>
+                    <p className="text-3xl font-bold text-club-accent mb-1">
                       {ticket.price === 0 ? 'FREE' : `${ticket.price.toLocaleString()} XAF`}
                     </p>
                     <p className="text-sm text-muted-foreground mb-4">
-                      {ticket.available} {locale === 'en' ? 'tickets available' : 'billets disponibles'}
+                      {ticket.available} {locale === 'en' ? 'available' : 'disponible'}
                     </p>
-                    <div className="space-y-3">
-                      <Link href={`/${locale}/checkout?event=${event.slug}&ticket=${idx}`} className="block">
-                        <Button className="w-full bg-club-accent hover:bg-club-accent/90">
-                          {locale === 'en' ? 'Buy Ticket' : 'Acheter Billet'}
-                        </Button>
-                      </Link>
-                      <Link href={`/${locale}/club/${event.slug}/tables`} className="block">
-                        <Button variant="outline" className="w-full">
-                          {locale === 'en' ? 'Reserve Table' : 'Réserver Table'}
-                        </Button>
-                      </Link>
-                    </div>
+                    
+                    {/* Package Features */}
+                    <ul className="space-y-2 mb-6">
+                      <li className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <CheckCircle className="h-4 w-4 text-success" />
+                        {locale === 'en' ? 'Event entry' : 'Entrée événement'}
+                      </li>
+                      <li className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <CheckCircle className="h-4 w-4 text-success" />
+                        {locale === 'en' ? 'Access to dance floor' : 'Accès piste de danse'}
+                      </li>
+                      {ticket.name.toLowerCase().includes('vip') && (
+                        <>
+                          <li className="flex items-center gap-2 text-sm text-vip-gold">
+                            <CheckCircle className="h-4 w-4 text-vip-gold" />
+                            {locale === 'en' ? 'VIP lounge access' : 'Accès lounge VIP'}
+                          </li>
+                          <li className="flex items-center gap-2 text-sm text-vip-gold">
+                            <CheckCircle className="h-4 w-4 text-vip-gold" />
+                            {locale === 'en' ? 'Premium seating' : 'Sièges premium'}
+                          </li>
+                        </>
+                      )}
+                    </ul>
+                    
+                    <Link href={`/${locale}/checkout?event=${event.slug}&ticket=${idx}`} className="block">
+                      <Button className={`w-full ${ticket.name.toLowerCase().includes('vip') ? 'bg-vip-gold hover:bg-vip-gold/80 text-black' : 'bg-club-accent hover:bg-club-accent/90'}`}>
+                        {locale === 'en' ? 'Select Package' : 'Sélectionner'}
+                      </Button>
+                    </Link>
                   </CardContent>
                 </Card>
               ))}
             </div>
 
+            {/* Table Reservation CTA */}
+            <div className="mt-12 p-6 rounded-2xl bg-gradient-to-r from-vip-gold/10 to-club-accent/10 border border-vip-gold/30">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div>
+                  <h3 className="text-xl font-bold text-foreground mb-2">
+                    {locale === 'en' ? 'Want a VIP Experience?' : 'Envie d\'une Expérience VIP?'}
+                  </h3>
+                  <p className="text-muted-foreground">
+                    {locale === 'en' 
+                      ? 'Reserve a table for your group with bottle service and dedicated seating'
+                      : 'Réservez une table pour votre groupe avec service bouteille et siège dédié'}
+                  </p>
+                </div>
+                <Link href={`/${locale}/club/${event.slug}/tables`}>
+                  <Button className="bg-vip-gold hover:bg-vip-gold/80 text-black font-semibold">
+                    {locale === 'en' ? 'Reserve Table' : 'Réserver une Table'}
+                  </Button>
+                </Link>
+              </div>
+            </div>
+            
             {/* Additional Actions */}
             <div className="mt-8 grid sm:grid-cols-2 gap-4">
               <Link href={`/${locale}/guest-list/${event.slug}`}>

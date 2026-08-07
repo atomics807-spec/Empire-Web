@@ -16,12 +16,12 @@ interface TablesPageProps {
 
 // Mock table data
 const mockTables = [
-  { id: 'C1', name: 'Club Table 1', type: 'regular', capacity: 6, deposit: 25000, minimumSpend: 50000, status: 'available' },
-  { id: 'C2', name: 'Club Table 2', type: 'regular', capacity: 6, deposit: 25000, minimumSpend: 50000, status: 'available' },
-  { id: 'C3', name: 'Club Table 3', type: 'regular', capacity: 8, deposit: 35000, minimumSpend: 75000, status: 'locked' },
-  { id: 'V1', name: 'VIP Table 1', type: 'vip', capacity: 8, deposit: 75000, minimumSpend: 150000, status: 'available' },
-  { id: 'V2', name: 'VIP Table 2', type: 'vip', capacity: 8, deposit: 75000, minimumSpend: 150000, status: 'reserved' },
-  { id: 'VV1', name: 'VVIP Table', type: 'vvip', capacity: 12, deposit: 150000, minimumSpend: 300000, status: 'available' },
+  { id: 'C1', name: 'Club Table 1', type: 'regular', capacity: 6, deposit: 25000, minimumSpend: 50000, status: 'available', features: ['Welcome drink per person', 'Priority entry', 'Dedicated waiter'] },
+  { id: 'C2', name: 'Club Table 2', type: 'regular', capacity: 6, deposit: 25000, minimumSpend: 50000, status: 'available', features: ['Welcome drink per person', 'Priority entry', 'Dedicated waiter'] },
+  { id: 'C3', name: 'Club Table 3', type: 'regular', capacity: 8, deposit: 35000, minimumSpend: 75000, status: 'locked', features: ['Welcome drink per person', 'Priority entry', 'Dedicated waiter'] },
+  { id: 'V1', name: 'VIP Table 1', type: 'vip', capacity: 8, deposit: 75000, minimumSpend: 150000, status: 'available', features: ['Premium location near stage', '2 bottles included', 'VIP lounge access', 'Exclusive entrance'] },
+  { id: 'V2', name: 'VIP Table 2', type: 'vip', capacity: 8, deposit: 75000, minimumSpend: 150000, status: 'reserved', features: ['Premium location near stage', '2 bottles included', 'VIP lounge access', 'Exclusive entrance'] },
+  { id: 'VV1', name: 'VVIP Table', type: 'vvip', capacity: 12, deposit: 150000, minimumSpend: 300000, status: 'available', features: ['Best location in the club', '3 bottles included', 'VVIP lounge', 'Personal host', 'Complimentary transfers'] },
 ]
 
 const statusColors = {
@@ -38,6 +38,12 @@ const statusLabels = {
   reserved: { en: 'Reserved', fr: 'Réservé' },
   occupied: { en: 'Occupied', fr: 'Occupé' },
   unavailable: { en: 'Unavailable', fr: 'Indisponible' },
+}
+
+const tableTypeLabels = {
+  regular: { en: 'Regular', fr: 'Standard' },
+  vip: { en: 'VIP', fr: 'VIP' },
+  vvip: { en: 'VVIP', fr: 'VVIP' },
 }
 
 export default function TablesPage({ params }: TablesPageProps) {
@@ -124,50 +130,72 @@ export default function TablesPage({ params }: TablesPageProps) {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Floor Map */}
+          {/* Table Packages */}
           <div className="lg:col-span-2">
             <Card>
               <CardHeader>
-                <CardTitle>{locale === 'en' ? 'Floor Plan' : 'Plan de Salle'}</CardTitle>
+                <CardTitle>{locale === 'en' ? 'Table Packages' : 'Packages Table'}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-3 gap-4 p-8 bg-surface-elevated rounded-xl">
-                  {/* Dance Floor */}
-                  <div className="col-span-3 h-32 rounded-lg bg-surface flex items-center justify-center text-muted-foreground">
-                    {locale === 'en' ? 'Dance Floor' : 'Piste de Danse'}
-                  </div>
-                  
-                  {/* Tables */}
+                <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
                   {tables.map(table => (
                     <button
                       key={table.id}
                       onClick={() => handleTableSelect(table)}
                       disabled={table.status !== 'available'}
                       className={`
-                        relative p-4 rounded-lg border-2 transition-all
-                        ${table.type === 'regular' ? 'bg-surface' : table.type === 'vip' ? 'bg-vip-gold/10 border-vip-gold/50' : 'bg-vip-gold/20 border-vip-gold'}
-                        ${table.status === 'available' ? 'cursor-pointer hover:border-club-accent hover:scale-105' : 'opacity-60 cursor-not-allowed'}
-                        ${selectedTable?.id === table.id ? 'border-club-accent ring-2 ring-club-accent' : 'border-border'}
+                        relative p-4 rounded-xl border-2 text-left transition-all
+                        ${table.type === 'regular' ? 'bg-surface' : 'bg-vip-gold/5'}
+                        ${table.type === 'vip' ? 'border-vip-gold/50' : table.type === 'vvip' ? 'border-vip-gold' : 'border-border'}
+                        ${table.status === 'available' ? 'cursor-pointer hover:border-club-accent hover:scale-[1.02]' : 'opacity-50 cursor-not-allowed'}
+                        ${selectedTable?.id === table.id ? 'border-club-accent ring-2 ring-club-accent' : ''}
                       `}
                     >
-                      <div className="text-center">
-                        <p className="font-bold text-foreground">{table.name}</p>
-                        <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
-                          <Users className="h-3 w-3" />
-                          {table.capacity}
-                        </p>
-                        <p className="text-xs text-club-accent font-medium mt-1">
+                      {table.type !== 'regular' && (
+                        <Badge variant="vip" className="absolute top-2 right-2">
+                          {tableTypeLabels[table.type as keyof typeof tableTypeLabels][locale]}
+                        </Badge>
+                      )}
+                      <div className="mb-3">
+                        <h4 className="font-bold text-foreground">{table.name}</h4>
+                        <p className="text-2xl font-bold text-club-accent">
                           {table.deposit.toLocaleString()} XAF
                         </p>
-                        {table.status !== 'available' && (
-                          <Badge className={`mt-2 text-xs ${statusColors[table.status as keyof typeof statusColors]}`}>
-                            {statusLabels[table.status as keyof typeof statusLabels][locale]}
-                          </Badge>
-                        )}
-                        {selectedTable?.id === table.id && (
-                          <CheckCircle className="h-5 w-5 text-club-accent mx-auto mt-2" />
-                        )}
+                        <p className="text-xs text-muted-foreground">
+                          {locale === 'en' ? 'Deposit' : 'Acompte'}
+                        </p>
                       </div>
+                      
+                      <div className="space-y-1 mb-3">
+                        <p className="text-sm text-muted-foreground flex items-center gap-2">
+                          <Users className="h-4 w-4" />
+                          {table.capacity} {locale === 'en' ? 'guests' : 'invités'}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {locale === 'en' ? 'Min spend' : 'Dépense min'}: {table.minimumSpend.toLocaleString()} XAF
+                        </p>
+                      </div>
+                      
+                      <div className="space-y-1">
+                        {table.features.slice(0, 2).map((feature, idx) => (
+                          <p key={idx} className="text-xs text-muted-foreground flex items-center gap-1">
+                            <CheckCircle className="h-3 w-3 text-success" />
+                            {feature}
+                          </p>
+                        ))}
+                      </div>
+                      
+                      {table.status !== 'available' && (
+                        <Badge className={`mt-3 ${statusColors[table.status as keyof typeof statusColors]}`}>
+                          {statusLabels[table.status as keyof typeof statusLabels][locale]}
+                        </Badge>
+                      )}
+                      
+                      {selectedTable?.id === table.id && (
+                        <div className="absolute top-2 left-2">
+                          <CheckCircle className="h-6 w-6 text-club-accent" />
+                        </div>
+                      )}
                     </button>
                   ))}
                 </div>
@@ -179,23 +207,53 @@ export default function TablesPage({ params }: TablesPageProps) {
           <div>
             <Card>
               <CardHeader>
-                <CardTitle>{locale === 'en' ? 'Reservation Details' : 'Détails de Réservation'}</CardTitle>
+                <CardTitle>{locale === 'en' ? 'Complete Your Reservation' : 'Complétez Votre Réservation'}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {selectedTable ? (
                   <>
-                    <div className="p-4 rounded-lg bg-club-accent/10 border border-club-accent/30">
-                      <p className="font-semibold text-foreground">{selectedTable.name}</p>
-                      <p className="text-sm text-muted-foreground flex items-center gap-1">
-                        <Users className="h-4 w-4" />
-                        {selectedTable.capacity} {locale === 'en' ? 'guests' : 'invités'}
-                      </p>
-                      <p className="text-sm text-muted-foreground mt-2">
-                        {locale === 'en' ? 'Deposit' : 'Acompte'}: <span className="text-club-accent font-medium">{selectedTable.deposit.toLocaleString()} XAF</span>
+                    <div className={`p-4 rounded-lg border ${
+                      selectedTable.type === 'vvip' ? 'bg-vip-gold/10 border-vip-gold/50' :
+                      selectedTable.type === 'vip' ? 'bg-vip-gold/5 border-vip-gold/30' :
+                      'bg-club-accent/10 border-club-accent/30'
+                    }`}>
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="font-bold text-foreground text-lg">{selectedTable.name}</p>
+                        {selectedTable.type !== 'regular' && (
+                          <Badge variant="vip">{tableTypeLabels[selectedTable.type as keyof typeof tableTypeLabels][locale]}</Badge>
+                        )}
+                      </div>
+                      <p className="text-2xl font-bold text-club-accent mb-3">
+                        {selectedTable.deposit.toLocaleString()} XAF
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        {locale === 'en' ? 'Minimum Spend' : 'Dépense Minimum'}: <span className="font-medium">{selectedTable.minimumSpend.toLocaleString()} XAF</span>
+                        {locale === 'en' ? 'Deposit (refundable)' : 'Acompte (remboursable)'}
                       </p>
+                      
+                      <div className="mt-4 pt-4 border-t border-border">
+                        <p className="text-sm text-muted-foreground flex items-center gap-2 mb-2">
+                          <Users className="h-4 w-4" />
+                          {selectedTable.capacity} {locale === 'en' ? 'guests maximum' : 'invités maximum'}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {locale === 'en' ? 'Minimum spend' : 'Dépense minimum'}: {selectedTable.minimumSpend.toLocaleString()} XAF
+                        </p>
+                      </div>
+                      
+                      {/* What's Included */}
+                      <div className="mt-4 pt-4 border-t border-border">
+                        <p className="text-sm font-medium text-foreground mb-2">
+                          {locale === 'en' ? 'What\'s Included:' : 'Inclus:'}
+                        </p>
+                        <ul className="space-y-1">
+                          {selectedTable.features.map((feature, idx) => (
+                            <li key={idx} className="text-sm text-muted-foreground flex items-center gap-2">
+                              <CheckCircle className="h-4 w-4 text-success" />
+                              {feature}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
 
                     <div className="space-y-2">
