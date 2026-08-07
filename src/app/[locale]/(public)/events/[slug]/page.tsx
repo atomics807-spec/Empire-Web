@@ -26,7 +26,13 @@ const mockEvents: Record<string, {
   venue: string
   agePolicy: string
   dressCode: string
-  ticketTypes: { name: string; price: number; available: number }[]
+  ticketTypes: { 
+    name: string; 
+    price: number; 
+    available: number;
+    image: string;
+    features: string[];
+  }[]
   isFeatured: boolean
 }> = {
   'saturday-night-fever': {
@@ -43,8 +49,20 @@ const mockEvents: Record<string, {
     agePolicy: '21+',
     dressCode: 'Smart Casual',
     ticketTypes: [
-      { name: 'General Entry', price: 5000, available: 150 },
-      { name: 'VIP Access', price: 15000, available: 30 },
+      { 
+        name: 'General Entry', 
+        price: 5000, 
+        available: 150,
+        image: 'https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=400&q=80',
+        features: ['Event entry', 'Dance floor access', 'Main bar access']
+      },
+      { 
+        name: 'VIP Access', 
+        price: 15000, 
+        available: 30,
+        image: 'https://images.unsplash.com/photo-1566417713940-fe7c737a9ef2?w=400&q=80',
+        features: ['Priority entry', 'VIP lounge access', 'Premium seating', 'Dedicated service', 'Complimentary drinks']
+      },
     ],
     isFeatured: true,
   },
@@ -62,7 +80,13 @@ const mockEvents: Record<string, {
     agePolicy: '18+',
     dressCode: 'Casual',
     ticketTypes: [
-      { name: 'General Entry', price: 3000, available: 250 },
+      { 
+        name: 'General Entry', 
+        price: 3000, 
+        available: 250,
+        image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&q=80',
+        features: ['Event entry', 'Dance floor access', 'Main bar access']
+      },
     ],
     isFeatured: true,
   },
@@ -80,8 +104,20 @@ const mockEvents: Record<string, {
     agePolicy: '21+',
     dressCode: 'Smart',
     ticketTypes: [
-      { name: 'Ladies (Free before 11 PM)', price: 0, available: 100 },
-      { name: 'Gents', price: 5000, available: 150 },
+      { 
+        name: 'Ladies Free Entry', 
+        price: 0, 
+        available: 100,
+        image: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80',
+        features: ['Free entry before 11 PM', 'Dance floor access', 'Complimentary drink']
+      },
+      { 
+        name: 'Gents Entry', 
+        price: 5000, 
+        available: 150,
+        image: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400&q=80',
+        features: ['Event entry', 'Dance floor access', 'Main bar access']
+      },
     ],
     isFeatured: false,
   },
@@ -176,61 +212,68 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
         </section>
 
         {/* Tickets Section */}
-        <section className="py-12 px-4">
+        <section className="py-12 px-4 bg-gradient-to-b from-surface/50 to-background">
           <div className="container mx-auto">
-            <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
-              <Ticket className="h-6 w-6 text-club-accent" />
+            <h2 className="text-3xl font-bold text-foreground mb-8 text-center">
               {locale === 'en' ? 'Choose Your Package' : 'Choisissez Votre Package'}
             </h2>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {event.ticketTypes.map((ticket, idx) => (
-                <Card key={idx} className={`relative overflow-hidden ${ticket.name.toLowerCase().includes('vip') ? 'border-vip-gold/50 bg-vip-gold/5' : ''}`}>
-                  {ticket.name.toLowerCase().includes('vip') && (
-                    <Badge variant="vip" className="absolute top-3 right-3">
-                      VIP
-                    </Badge>
-                  )}
-                  {ticket.price === 0 && (
-                    <div className="absolute top-3 left-3 bg-success text-success-foreground text-xs px-2 py-1 rounded-lg">
-                      FREE ENTRY
+                <Card key={idx} className={`relative overflow-hidden group hover:shadow-2xl transition-all duration-300 ${ticket.name.toLowerCase().includes('vip') || ticket.name.toLowerCase().includes('lounge') ? 'border-vip-gold/50' : 'border-club-accent/30'}`}>
+                  {/* Package Image */}
+                  <div className="relative h-40 overflow-hidden">
+                    <img 
+                      src={ticket.image} 
+                      alt={ticket.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    
+                    {/* Badges */}
+                    {ticket.name.toLowerCase().includes('vip') && (
+                      <Badge variant="vip" className="absolute top-3 right-3 shadow-lg">
+                        VIP
+                      </Badge>
+                    )}
+                    {ticket.price === 0 && (
+                      <div className="absolute top-3 left-3 bg-success text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg">
+                        FREE ENTRY
+                      </div>
+                    )}
+                    
+                    {/* Price on Image */}
+                    <div className="absolute bottom-3 left-3">
+                      <p className="text-2xl font-bold text-white">
+                        {ticket.price === 0 ? 'FREE' : `${ticket.price.toLocaleString()} XAF`}
+                      </p>
                     </div>
-                  )}
-                  <CardContent className="p-6">
-                    <h3 className="text-xl font-bold text-foreground mb-1">{ticket.name}</h3>
-                    <p className="text-3xl font-bold text-club-accent mb-1">
-                      {ticket.price === 0 ? 'FREE' : `${ticket.price.toLocaleString()} XAF`}
-                    </p>
+                  </div>
+                  
+                  <CardContent className="p-5">
+                    <h3 className="text-lg font-bold text-foreground mb-2">{ticket.name}</h3>
                     <p className="text-sm text-muted-foreground mb-4">
                       {ticket.available} {locale === 'en' ? 'available' : 'disponible'}
                     </p>
                     
-                    {/* Package Features */}
-                    <ul className="space-y-2 mb-6">
-                      <li className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <CheckCircle className="h-4 w-4 text-success" />
-                        {locale === 'en' ? 'Event entry' : 'Entrée événement'}
-                      </li>
-                      <li className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <CheckCircle className="h-4 w-4 text-success" />
-                        {locale === 'en' ? 'Access to dance floor' : 'Accès piste de danse'}
-                      </li>
-                      {ticket.name.toLowerCase().includes('vip') && (
-                        <>
-                          <li className="flex items-center gap-2 text-sm text-vip-gold">
-                            <CheckCircle className="h-4 w-4 text-vip-gold" />
-                            {locale === 'en' ? 'VIP lounge access' : 'Accès lounge VIP'}
-                          </li>
-                          <li className="flex items-center gap-2 text-sm text-vip-gold">
-                            <CheckCircle className="h-4 w-4 text-vip-gold" />
-                            {locale === 'en' ? 'Premium seating' : 'Sièges premium'}
-                          </li>
-                        </>
-                      )}
+                    {/* Package Features with Images/Icons */}
+                    <ul className="space-y-2 mb-5">
+                      {ticket.features.map((feature, fIdx) => (
+                        <li key={fIdx} className="flex items-center gap-2 text-sm">
+                          <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
+                            ticket.name.toLowerCase().includes('vip') 
+                              ? 'bg-vip-gold/20 text-vip-gold' 
+                              : 'bg-club-accent/20 text-club-accent'
+                          }`}>
+                            <CheckCircle className="w-3 h-3" />
+                          </div>
+                          <span className="text-muted-foreground">{feature}</span>
+                        </li>
+                      ))}
                     </ul>
                     
                     <Link href={`/${locale}/checkout?event=${event.slug}&ticket=${idx}`} className="block">
-                      <Button className={`w-full ${ticket.name.toLowerCase().includes('vip') ? 'bg-vip-gold hover:bg-vip-gold/80 text-black' : 'bg-club-accent hover:bg-club-accent/90'}`}>
+                      <Button className={`w-full ${ticket.name.toLowerCase().includes('vip') || ticket.name.toLowerCase().includes('lounge') ? 'bg-vip-gold hover:bg-vip-gold/80 text-black' : 'btn-club'}`}>
                         {locale === 'en' ? 'Select Package' : 'Sélectionner'}
                       </Button>
                     </Link>

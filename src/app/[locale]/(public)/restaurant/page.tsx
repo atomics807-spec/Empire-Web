@@ -16,34 +16,73 @@ export default function RestaurantPage({ params }: RestaurantPageProps) {
 
   return (
     <PublicLayout locale={locale}>
-      {/* Hero Section - Brighter theme */}
-      <section className="relative py-20 px-4 bg-gradient-to-br from-restaurant-accent/20 via-restaurant-accent/10 to-background">
-        <div className="container mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-restaurant-accent text-restaurant-accent-foreground mb-6 shadow-lg">
-            <Utensils className="h-5 w-5" />
-            <span className="text-sm font-semibold">
+      {/* Hero Section - With Background Image */}
+      <section className="relative min-h-[600px] flex items-center">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1920&q=80')`,
+          }}
+        >
+          {/* Dark Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/50" />
+        </div>
+        
+        {/* Content */}
+        <div className="relative container mx-auto px-4 py-20">
+          <div className="max-w-3xl">
+            {/* Status Badge */}
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-restaurant-accent text-black font-semibold mb-8 shadow-xl">
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-black opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-black"></span>
+              </span>
               {locale === 'en' ? 'Now Open' : 'Ouvert maintenant'}
-            </span>
-          </div>
-          <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-4">
-            {locale === 'en' ? 'Empire Restaurant' : 'Restaurant Empire'}
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-            {locale === 'en' 
-              ? 'Experience authentic Cameroonian cuisine in a warm, welcoming atmosphere'
-              : 'Découvrez la cuisine camerounaise authentique dans une atmosphère chaleureuse et accueillante'}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href={`/${locale}/restaurant/menu`}>
-              <Button size="lg" className="w-full sm:w-auto btn-restaurant text-lg px-8 py-6">
-                <Utensils className="h-6 w-6 mr-2" />
-                {locale === 'en' ? 'View Menu' : 'Voir le Menu'}
+            </div>
+            
+            {/* Title */}
+            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+              {locale === 'en' ? 'Empire' : 'Empire'}{' '}
+              <span className="text-restaurant-accent">Restaurant</span>
+            </h1>
+            
+            {/* Description */}
+            <p className="text-xl md:text-2xl text-white/90 mb-4 max-w-xl">
+              {locale === 'en' 
+                ? 'Experience the finest authentic Cameroonian cuisine in the heart of Limbe'
+                : 'Découvrez la meilleure cuisine camerounaise authentique au cœur de Limbe'}
+            </p>
+            
+            {/* Location */}
+            <div className="flex items-center gap-2 text-white/70 mb-8">
+              <MapPin className="h-5 w-5 text-restaurant-accent" />
+              <span>Opposite Limbe Community Field, Cameroon</span>
+            </div>
+            
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link href={`/${locale}/restaurant/menu`}>
+                <Button size="lg" className="btn-restaurant text-lg px-10 py-7 shadow-2xl shadow-restaurant-accent/30">
+                  <Utensils className="h-6 w-6 mr-3" />
+                  {locale === 'en' ? 'View Menu' : 'Voir le Menu'}
+                </Button>
+              </Link>
+              <Button variant="outline" size="lg" className="border-2 border-white/50 text-white hover:bg-white/10 hover:border-white text-lg px-10 py-7">
+                <Clock className="h-6 w-6 mr-3" />
+                08:00 - 17:30
               </Button>
-            </Link>
-            <Button variant="outline" size="lg" className="w-full sm:w-auto border-restaurant-accent text-restaurant-accent hover:bg-restaurant-accent/10 text-lg px-8 py-6">
-              <Clock className="h-6 w-6 mr-2" />
-              08:00 - 17:30
-            </Button>
+            </div>
+          </div>
+        </div>
+        
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+          <div className="flex flex-col items-center text-white/60">
+            <span className="text-sm mb-2">{locale === 'en' ? 'Scroll' : 'Défiler'}</span>
+            <div className="w-6 h-10 border-2 border-white/40 rounded-full flex justify-center">
+              <div className="w-1.5 h-3 bg-white/60 rounded-full mt-2 animate-bounce" />
+            </div>
           </div>
         </div>
       </section>
