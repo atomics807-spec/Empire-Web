@@ -265,7 +265,7 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
               ? 'Reserve a VIP table for your group and enjoy premium service all night.'
               : 'Réservez une table VIP pour votre groupe et profitez d\'un service premium toute la nuit.'}
           </p>
-          <Link href={`/${locale}/events/${events[0].slug}/tables`}>
+          <Link href={`/${locale}/club/${events[0].slug}/tables`}>
             <Button className="btn-vip">
               {t('club.reserveTable', locale as Locale)}
             </Button>
